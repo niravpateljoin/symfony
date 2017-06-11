@@ -1,0 +1,6 @@
+.purchase_table td, .purchase_table th{	border:1px solid #e5e3e3;}
+.purchase_table tr th{background-color:#e8eaeb;color:#502d88;font-size:14px;font-weight:bold;}
+.purchase_table tr td{font-size:12px;}
+.evenrow td{ background-color: #E8EAEB; } 
+.oddrow td{ background-color: #ffffff; }
+		

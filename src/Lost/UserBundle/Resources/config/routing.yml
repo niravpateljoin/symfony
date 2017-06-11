@@ -1,0 +1,100 @@
+
+lost_user_homepage:
+    path:     /
+    defaults: { _controller: LostUserBundle:Homepage:index }
+
+lost_password_reset_success:
+    path:     /password-reset-success
+    defaults: { _controller: LostUserBundle:Resetting:resetSuccess }
+    
+lost_user_account:
+    path:     /account
+    defaults: { _controller: LostUserBundle:Account:index }
+
+lost_user_profile:
+    path:     /profile/{tab}
+    defaults: { _controller: LostUserBundle:Account:accountUpdate,tab:1 }
+
+lost_user_account_type_update:
+    path:     /account/type
+    defaults: { _controller: LostUserBundle:Account:type}
+
+lost_user_deers_auth:
+    path:     /deers-auth
+    defaults: { _controller: LostUserBundle:User:deersAuth }
+    
+fos_user_security_login:
+    path:     /login
+    defaults: { _controller: LostUserBundle:Security:login }
+
+lost_user_verification_success:
+    path:     /email-verification-success
+    defaults: { _controller: LostUserBundle:Registration:emailVerificationSuccess }
+    
+lost_user_email_verification_failed:
+    path:     /resend-email-verification/{token}
+    defaults: { _controller: LostUserBundle:Registration:resend }
+    
+lost_user_plan_add:
+    path:     /add-plan
+    defaults: { _controller: LostUserBundle:Plan:add }
+    
+lost_user_plan_maintenance:
+    path:     /maintenance
+    defaults: { _controller: LostUserBundle:Plan:maintenance }
+    
+lost_user_support:
+    path:     /support
+    defaults: { _controller: LostUserBundle:Support:support }
+    
+lost_test_selevision:
+    path:     /test/selevision-ws
+    defaults: { _controller: LostUserBundle:Test:selevisionWs }    
+    
+lost_purchase_history:
+    path:     /purchase-history
+    defaults: { _controller: LostUserBundle:PurchaseHistory:purchaseHistory }    
+    
+lost_purchase_history_exportpdf:
+    path:     /purchase/history/export
+    defaults: { _controller: LostUserBundle:PurchaseHistory:exportpdf }
+
+lost_customer_refund:
+    path:     /refund/{id}
+    defaults: { _controller: LostUserBundle:User:refund }
+    
+lost_user_mac_address:
+    path:     /mac-address/{id}
+    defaults: { _controller: LostUserBundle:UserMacAddress:macAddress, id:0}
+
+lost_user_mac_address_list:
+    path:     /mac-address-list/{id}
+    defaults: { _controller: LostUserBundle:UserMacAddress:listMacAddress, id:0}
+
+lost_user_mac_address_remove:
+    path:     /mac-address-remove/{id}
+    defaults: { _controller: LostUserBundle:UserMacAddress:deleteMacAddress}
+    
+lost_user_mac_address_edit:
+    path:     /edit-mac-address/{id}
+    defaults: { _controller: LostUserBundle:UserMacAddress:editMacAddress}
+    
+lost_user_mac_address_add:
+    path:     /add-mac-address
+    defaults: { _controller: LostUserBundle:UserMacAddress:addMacAddress}
+    
+lost_account_summary_tabs:
+    path:     /account-summary/{tab}
+    defaults: { _controller: LostUserBundle:Account:ajaxAccountSummary,tab:1}    
+
+lost_user_homepage_test:
+    path:     /test
+    defaults: { _controller: LostUserBundle:Homepage:index }
+
+lost_user_purchase_credit:
+    path:     /credit
+    defaults: { _controller: LostUserBundle:User:purchaseCredit }    
+    
+lost_user_purchase_history_json:
+    pattern:  /purchase-history-list-json
+    defaults: { _controller: LostUserBundle:PurchaseHistory:purchaseHistoryJson }    

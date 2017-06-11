@@ -1,0 +1,138 @@
+{% block body %}
+{% set subTotalIPTV = 0 %}
+{% set subTotalISP = 0 %}
+<div class="rcolcont">
+	{% if 'IPTV' in summaryData.AvailableServicesOnLocation %}
+	<div class="botcolcont">
+		<div class="titbar">
+			<h2>IPTV Service</h2>
+			<span class="botArw">&nbsp;</span>
+		</div>
+		{% if summaryData.IsIPTVAvailabledInCart == 1 or summaryData.IsAddOnAvailabledInCart == 1 %}
+		<div class="inncont">
+			
+			{% if summaryData.IsIPTVAvailabledInCart == 1 %}
+				<div class="fildblk toprow">
+					<span class="pull-left">IPTV Package</span><span class="pull-right">Price</span>
+				</div>
+			
+				{% for iptvPackage in summaryData.Cart.IPTV.RegularPack %}
+					<div class="fildblk upgrade-field">
+						<span class="pull-left">{{ iptvPackage.packageName }}</span> 
+						<span class="pull-right">${{ iptvPackage.amount }}</span>
+					</div>
+					{% set subTotalIPTV = subTotalIPTV + iptvPackage.amount %}
+					
+					{% if iptvPackage.discountPercentage > 0 %}
+					<div class="fildblk upgrade-field">
+                    	<span class="pull-left">{{ iptvPackage.discountPercentage }}% Bundle discount on TV Package</span> 
+                        <span class="pull-right">-{{ iptvPackage.discountAmount }}</span>                                                    	
+						{% set subTotalIPTV = subTotalIPTV - iptvPackage.discountAmount %}
+                    </div>
+					{% endif %}					
+				{% endfor %}	
+				
+				{% if summaryData.Cart.IPTV.unusedDays > 0 %}				
+					<div class="fildblk upgrade-field">
+						<span class="pull-left">Existing IPTV Pack Unused credit</span> 
+					    <span class="pull-right">-{{ summaryData.Cart.IPTV.unusedCredit|number_format(2) }}</span>                                                    	
+						{% set subTotalIPTV = subTotalIPTV - summaryData.Cart.IPTV.unusedCredit %}
+					</div>					
+				{% endif %}
+														
+			{% endif %}
+			
+			{% if summaryData.IsAddOnAvailabledInCart == 1 %}
+				<div class="fildblk toprow">
+					<span class="pull-left">Premium Package</span>
+					<span class="pull-right">Price</span>
+				</div>
+				{% for addOnPackage in summaryData.Cart.IPTV.AddOnPack %}
+					<div class="fildblk upgrade-field">
+						<span class="pull-left">{{ addOnPackage.packageName }}</span> 
+						<span class="pull-right">${{ addOnPackage.payableAmount }}</span>
+					</div>
+					{% set subTotalIPTV = subTotalIPTV + addOnPackage.payableAmount %}
+				{% endfor %}
+				
+			{% endif %}
+			<div class="fildblk botrow">
+				<span class="pull-left"> <strong>IPTV Subtotal</strong></span> 
+				<span class="pull-right"><strong>${{ subTotalIPTV|number_format(2) }}</strong></span>
+			</div>
+		</div>
+		{% else %}
+		<div class="fildblk text-center">
+			<span>No package found</span>
+		</div>
+		{% endif %}
+	</div>
+	{% endif %}
+	
+	{% if 'ISP' in summaryData.AvailableServicesOnLocation %}
+	<div class="botcolcont">
+		<div class="titbar">
+			<h2>Internet Service</h2>
+			<span class="botArw">&nbsp;</span>
+		</div>
+		{% if summaryData.IsISPAvailabledInCart == 1 %}
+		<div class="inncont">
+			<div class="fildblk toprow">
+				<span class="pull-left">Package</span><span class="pull-right">Price</span>
+			</div>
+			{% if summaryData.Cart.ISP.RegularPack %}
+				{% for ispPackage in summaryData.Cart.ISP.RegularPack %}
+					<div class="fildblk upgrade-field">
+						<span class="pull-left">{{ ispPackage.packageName }}</span> 
+						<span class="pull-right">${{ ispPackage.amount }}</span>
+					</div>
+					{% set subTotalISP = subTotalISP + ispPackage.amount %}
+				{% endfor %}
+				
+				{% if summaryData.Cart.ISP.unusedDays > 0 %}				
+					<div class="fildblk upgrade-field">
+						<span class="pull-left">Existing ISP Pack Unused credit</span> 
+					    <span class="pull-right">-{{ summaryData.Cart.ISP.unusedCredit|number_format(2) }}</span>                                                    	
+						{% set subTotalISP = subTotalISP - summaryData.Cart.ISP.unusedCredit %}
+					</div>					
+				{% endif %}
+			{% endif %}
+			<div class="fildblk botrow">
+				<span class="pull-left"> <strong>Internet Subtotal</strong></span> 
+				<span class="pull-right"><strong>${{ subTotalISP|number_format(2) }}</strong></span>
+			</div>
+		</div>
+		{% else %}
+		<div class="fildblk text-center">
+			<span>No package found</span>
+		</div>
+		{% endif %}
+		
+	</div>
+	{% endif %}
+	<div class="botcolcont">
+		<div class="coltitbar">
+			<h2>Order Summary</h2>
+		</div>
+		<div class="inncont borderbot">
+			<div class="fildblk botrow">
+				<span class="pull-left"><strong>Current Monthly total</strong></span> 
+				<span class="pull-right"><strong>${{ summaryData.TotalPurchasedAmount|number_format(2) }}</strong></span>
+			</div>
+			<div class="fildblk botrow upgrade-field">
+				<span class="pull-left"><strong>Updated Monthly Total**</strong></span> 
+				<span class="pull-right"><strong>${{ summaryData.TotalCartAmount|number_format(2) }}</strong></span>
+			</div>			
+		</div>
+		<div class="colcont">
+			<div class="btnblk bor-none">
+				{% if summaryData.IsIPTVAvailabledInCart == 1 or summaryData.IsISPAvailabledInCart == 1 or summaryData.IsAddOnAvailabledInCart == 1 %}
+				<a href="{{url('lost_service_purchaseverification')}}" class="btn-sm btn-default">Continue</a>
+				{% else %}
+				<input type="button" value="Continue" class="btn-sm btn-default"/>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock body %}

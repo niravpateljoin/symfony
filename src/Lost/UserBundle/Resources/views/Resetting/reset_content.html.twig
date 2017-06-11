@@ -1,0 +1,26 @@
+{% trans_default_domain 'FOSUserBundle' %}
+
+<div class="loginBg">
+    <div class="login">
+        <div class="loginForm">
+            <h1>Reset Password</h1>
+            <ul>
+                <form action="{{ path('fos_user_resetting_reset', {'token': token}) }}" {{ form_enctype(form) }} method="POST" class="fos_user_resetting_reset" id="fos_user_resetting_reset" novalidate>
+                    <li>
+                        {{ form_widget(form.plainPassword.first, { 'attr': {'placeholder': 'New Password'}}) }}
+                        <div class="serverError">{{ form_errors(form.plainPassword.first) }}</div>
+                    </li>
+                    <li>
+                        {{ form_widget(form.plainPassword.second, { 'attr': {'placeholder': 'Confirm Password'}}) }}
+                        <div class="serverError">{{ form_errors(form.plainPassword.second) }}</div>
+                    </li>
+                    {{ form_rest(form) }}
+                    <li class="submit">
+                        <input type="submit" class="submitBtn" value="{{ 'resetting.reset.submit'|trans }}" />
+                    </li>
+                </form>
+            </ul>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,18 @@
+<form action="javascript:void(0);" {{ form_enctype(form) }} method="POST" class="" id="editMacAddress" novalidate>
+                                    
+            <li class="input_field">
+                <input type="hidden" value="{{macAddress.id}}" name="edit-id" id="edit-id">
+                {{ form_widget(form.macAddress, { 'attr': {'data-prompt-position': 'topRight', 'placeholder': 'User Mac Address'}}) }}
+                
+                <div class="serverError">
+                    
+                    {% if form_errors(form.macAddress) %}
+                        {{ form_errors(form.macAddress) }}
+                    {% endif %}
+                </div>
+                
+            </li>
+                                    
+            {{ form_rest(form) }}
+            <li class="submit"><input type="submit" name="submit" id="submitEditMacAddress" value="Update" class="submitBtn"></li>
+</form>

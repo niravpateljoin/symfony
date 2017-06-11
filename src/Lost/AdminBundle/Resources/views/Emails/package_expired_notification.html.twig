@@ -1,0 +1,26 @@
+<p>Hello {{ username }},<p>
+<br />
+Your {{ userService.service.name }} package will be expire on {{ userService.activationDate|date('m/d/Y') }} 
+<br />
+Below is your current active plan detail: 
+<br />
+<table border="1" cellpadding="5" cellspacing="0">
+	<tr>
+		<th>Package</th>
+		<th>Amount</th>
+		<th>Activation Date</th>
+		<th>Expire Date</th>
+	</tr>
+	<tr>
+		<td>{{ userService.packageName }}</td>
+		<td>${{ userService.amount }}</td>
+		<td>{{ userService.activationDate|date('m/d/Y') }}</td>
+		<td>{{ userService.expiryDate|date('m/d/Y') }}</td>
+	</tr>
+</table>
+<br />
+Now you can login and purchase a new plan and avoid a lapse in service when it does expire. 
+<br /><br />
+Regards,
+<br />
+Lost Team.

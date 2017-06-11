@@ -1,0 +1,166 @@
+{% extends "LostUserBundle::layout.html.twig" %}
+{% block body %}
+<div class="innerBg">
+	<div class="container">
+    	<div class="row">
+        	{% include "LostUserBundle::flashMessage.html.twig" %}
+        	<h3>Thank you for using Lost Portal Services</h3>
+			<h4>Your service purchase process has been completed. Below is your order detail.</h4>	
+			
+			{% if purchasedSummaryData.OrderNumber != '' %}
+				{% set ispArrLength = 0 %}
+				<table class="table table-bordered">
+					<tr>
+	                    <th colspan="5">
+	                    	<b>Transaction ID:</b> {{ purchasedSummaryData.OrderNumber }}<br/>
+							<b>Date:</b> {{ purchasedSummaryData.PurchasedDate }}<br/>
+							<b>Payment By:</b> {{ purchasedSummaryData.PaymentMethod }}<br/>						
+	                    </th>                    
+	                </tr>
+					
+					{% if 'ISP' in purchasedSummaryData|keys %}
+					
+						{% set ispArrLength = purchasedSummaryData.ISP|length %}
+						{% if ispArrLength > 0 %}
+							<tr>
+			                    <th rowspan="{{ ispArrLength + 1 }}" style="color:#6c509a">ISP Packages {{ ispArrLength }}</th>
+			                    <th>Package</th>
+			                    <th>Activation Status</th>
+			                    <th>Payment Status</th>
+			                    <th>Price</th>                    
+			                </tr>
+		                	{% for ispPurchase in purchasedSummaryData.ISP %}
+			                <tr>
+			                    <td>{{ ispPurchase.packageName }}</td>
+			                    <td>{{ ispPurchase.packageStatus }}</td>
+			                    <td>{{ ispPurchase.paymentStatus }}</td>
+			                    <td>{{ ispPurchase.packagePaybleAmount }}</td>                    
+			                </tr>
+			                {% endfor %}
+			                <tr>
+			                    <td colspan="4" align="right"><i>Sub Total</i></td>
+			                    <td>{{ purchasedSummaryData.ISPTotalPaybleAmount|number_format(2) }}</td>                    
+			                </tr>
+		                {% endif %}
+	                {% endif %}
+	                
+	                {% if 'IPTV' in purchasedSummaryData|keys %}
+					
+						{% set iptvArrLength = purchasedSummaryData.IPTV|length %}
+						{% if iptvArrLength > 0 %}
+							<tr>
+			                    <th rowspan="{{ iptvArrLength + 1 }}" style="color:#6c509a">IPTV Packages</th>
+			                    <th>Package</th>
+			                    <th>Activation Status</th>
+			                    <th>Payment Status</th>
+			                    <th>Price</th>                    
+			                </tr>
+		                	{% for iptvPurchase in purchasedSummaryData.IPTV %}
+			                <tr>
+			                    <td>{{ iptvPurchase.packageName }}</td>
+			                    <td>{{ iptvPurchase.packageStatus }}</td>
+			                    <td>{{ iptvPurchase.paymentStatus }}</td>
+			                    <td>{{ iptvPurchase.packagePaybleAmount }}</td>                    
+			                </tr>
+			                {% endfor %}
+			                <tr>
+			                    <td colspan="4" align="right"><i>Sub Total</i></td>
+			                    <td>{{ purchasedSummaryData.IPTVTotalPaybleAmount|number_format(2) }}</td>                    
+			                </tr>
+		                {% endif %}
+	                {% endif %}
+	                
+	                
+	                {% if 'AddOn' in purchasedSummaryData|keys %}
+					
+						{% set addOnArrLength = purchasedSummaryData.AddOn|length %}
+						{% if addOnArrLength > 0 %}
+							<tr>
+			                    <th rowspan="{{ addOnArrLength + 1 }}" style="color:#6c509a">Premium Packages</th>
+			                    <th>Package</th>
+			                    <th>Activation Status</th>
+			                    <th>Payment Status</th>
+			                    <th>Price</th>                    
+			                </tr>
+		                	{% for addOnPurchase in purchasedSummaryData.AddOn %}
+			                <tr>
+			                    <td>{{ addOnPurchase.packageName }}</td>
+			                    <td>{{ addOnPurchase.packageStatus }}</td>
+			                    <td>{{ addOnPurchase.paymentStatus }}</td>
+			                    <td>{{ addOnPurchase.packagePaybleAmount }}</td>                    
+			                </tr>
+			                {% endfor %}
+			                <tr>
+			                    <td colspan="4" align="right"><i>Sub Total</i></td>
+			                    <td>{{ purchasedSummaryData.AddOnTotalPaybleAmount|number_format(2) }}</td>                    
+			                </tr>
+		                {% endif %}
+	                {% endif %}
+	                
+	                {% if 'Credit' in purchasedSummaryData|keys %}
+					
+						{% set creditArrLength = purchasedSummaryData.Credit|length %}
+						{% if creditArrLength > 0 %}
+							<tr>
+			                    <th rowspan="{{ creditArrLength + 1 }}" style="color:#6c509a">Credit Purchase</th>
+			                    <th colspan="2">Description</th>
+			                    <th>Payment Status</th>
+	                    		<th>Price</th>                    
+			                </tr>
+		                	{% for creditPurchase in purchasedSummaryData.Credit %}
+			                <tr>
+			                	<td colspan="2">{{ creditPurchase.packageName }}</td>			                	
+			                    <td>{{ creditPurchase.paymentStatus }}</td>
+			                	<td>{{ creditPurchase.packagePaybleAmount }}</td>
+			                </tr>
+			                {% endfor %}
+			                <tr>
+			                    <td colspan="4" align="right"><i>Sub Total</i></td>
+			                    <td>{{ purchasedSummaryData.CreditTotalPaybleAmount|number_format(2) }}</td>                    
+			                </tr>
+		                {% endif %}
+	                {% endif %}
+	                
+	                <tr>
+	                    <td colspan="5">&nbsp;</td>                                   
+	                </tr>
+	                
+	                {% set groundTotal = 0 %}
+	                {% set netPaidBy = 0 %}
+	                {% set totalRefund = 0 %}
+	                
+	                {% if purchasedSummaryData.ServiceNetPaidAmount == purchasedSummaryData.PurchaseOrderNetPaidAmount %}
+	                
+	                	{% set groundTotal = purchasedSummaryData.PurchaseOrderNetPaidAmount %}
+	                {% endif %}
+	                
+	                {% if purchasedSummaryData.ServiceNetRefundedAmount == purchasedSummaryData.PurchaseOrderNetRefundedAmount %}
+	                
+	                	{% set totalRefund = purchasedSummaryData.PurchaseOrderNetRefundedAmount %}
+	                {% endif %}
+	                
+	                {% set netPaidBy = groundTotal - totalRefund %}
+	                <tr>
+	                    <td colspan="4" align="right"><b>Ground Total</b></td>
+	                    <td><b>${{ groundTotal|number_format(2) }}</b></td>                    
+	                </tr>
+	                
+	                <tr>
+	                    <td colspan="4" align="right"><b>Net Paid Amount by {{ purchasedSummaryData.PaymentMethod }}</b></td>
+	                    <td><b>${{ netPaidBy|number_format(2) }}</b></td>                    
+	                </tr>
+	                
+	                <tr>
+	                    <td colspan="5"><b>Refunded Payment Summary</b></td>                                        
+	                </tr>
+	                <tr>
+	                    <td colspan="4" align="right"><b><i>This amount refunded in your selected payment option account.</i></b></td>
+	                    <td><b><i>${{ totalRefund|number_format(2) }}</i></b></td>                    
+	                </tr>
+	                
+				</table>
+			{% endif %}			
+		</div>
+	</div>
+</div>
+{% endblock body %}

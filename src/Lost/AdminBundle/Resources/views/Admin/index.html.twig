@@ -1,0 +1,112 @@
+{% extends "LostAdminBundle::layout.html.twig" %}
+
+{% block body %}
+
+        {% include "LostUserBundle::flashMessage.html.twig" %}
+		<!-- Content Header (Page header) -->
+		<section class="content-header">
+			<h1>
+				Search Admin
+			</h1>
+		</section>
+		<section class="content">
+		 <div class="row">
+			<div class="col-lg-12">
+			<div class="box box-success">	
+			<form method="get" action="{{ path('lost_admin_list') }}">
+			<div class="box-body">	
+					
+					<div class="form-group col-md-4"><input type="text" name="search" placeholder="username or email..." value="{{ (app.request.get('search')) ? app.request.get('search') : ''}}" class="form-control"></div>
+					</div>
+			
+			<div class="box-footer">
+			<div class="col-sm-6 add-btn-bx">			
+					<input type="submit" value="Search" class="btn btn-success"/>&nbsp;&nbsp;
+					<a href="{{ path(app.request.attributes.get('_route')) }}" class="btn btn-default">Clear</a>
+					</div>
+			</div>
+			</form>
+			</div>
+			</div>	
+		</div> 
+		<div class="row">
+			<div class="col-lg-12">
+			<div class="box box-success">	
+			<div class="box-body">
+			{% if admin_permission.checkPermission('admin_create') %}
+				   <a href="{{ path('lost_admin_new') }}" class="btn btn-success pull-right margin-bottom10">Add new admin</a>
+			{% endif %}
+        <table class="table table-bordered table-hover">
+		<thead>
+            <tr>
+                {# sorting of properties based on query components #}
+                <th>{{ knp_pagination_sortable(pagination, 'Id', 'u.id') }}</th>
+                <th{% if pagination.isSorted('username') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Username', 'u.username') }}</th>
+                <th{% if pagination.isSorted('email') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Email', 'u.email') }}</th>
+                <th{% if pagination.isSorted('status') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Status', 'u.enabled') }}</th>
+                <th{% if pagination.isSorted('lastLogin') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Last Login', 'u.lastLogin') }}</th>
+                <th{% if pagination.isSorted('isloggedin') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Login Status', 'u.isloggedin') }}</th>
+                <th>Role</th>
+                <th>Action</th>
+            </tr>
+		</thead>
+		<tbody>
+        {# table body #}
+        {% if (pagination|length > 0) %}
+        {% for record in pagination %}
+        		
+        	<!-- record.roles[0] -->
+            <tr {% if loop.index is odd %}class="color"{% endif %}>
+                <td>{{ record.id }}</td>
+                <td>
+					<a href="{{ path('lost_admin_edit', {'id': record.id})}}">{{ record.username }}</a>
+                </td>
+                <td>{{ record.email }}</td>
+                <td>{{ record.enabled ? 'Active':'Inactive' }}</td>
+                <td>
+                    {% if record.lastLogin is not null %}
+                        {{ record.lastLogin | date('M-d-Y H:i:s') }}
+                    {% endif %}
+                </td>
+                <td>
+                    {{ (record.isloggedin) ? 'LoggedIn' : '' }}
+                </td>
+                <td>
+                    {% if record.groups is not empty %}
+                        {{  record.getGroup }}
+                    {% endif %}
+                </td>
+
+		<td>
+    			<a href="{{ path('lost_admin_edit', {'id': record.id})}}">Edit</a>
+				
+                    {% if admin_permission.checkPermission('admin_delete') and (admin.getGroup == 'Super Admin' and record.getGroup != 'Super Admin') %}
+                    	&nbsp;|&nbsp;<a href="{{ path('lost_admin_delete', {'id': record.id})}}" onclick="return confirm('Are you sure want to delete?')">Delete</a>
+                    {% endif %}
+                        {% if record.getGroup != 'Super Admin' and record.groups is not empty %}
+                        &nbsp;|&nbsp;<a href="{{ path('lost_admin_service_location', {'id': record.id})}}">Service Location</a>
+                        {% endif%}
+            	</td>
+            	
+            </tr>
+        {% endfor %}
+         {% else %}
+            <tr><td colspan="9" align="center">No records found.</td></tr>
+                {% endif %}
+		</tbody>		
+        </table>
+		</div>
+		</div>
+		</div>
+		</div>
+		
+		<div class="row">
+        <div class="col-xs-12">
+        {# display navigation #}
+        <div class="navigation pull-right">
+            {{ knp_pagination_render(pagination) }}
+        </div>
+		</div>
+		</div>
+		</section>
+{% endblock body %}

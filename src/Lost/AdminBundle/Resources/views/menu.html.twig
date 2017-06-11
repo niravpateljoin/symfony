@@ -1,0 +1,74 @@
+{% set c_path = app.request.attributes.get('_route') %}
+<ul class="sidebar-menu">
+
+	{% if app.user %}
+		<li class="header">
+		<h4 class="box-title mainTitle text-white">Main Menu</h4>
+		</li>
+		<li><a class="{% if c_path in ['lost_admin_dashboard'] %}activeLink{% endif %}" href="{{ path('lost_admin_dashboard')}}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+		{% if (app.user.group == 'Super Admin') %}	
+		<li><a class="{% if c_path in ['lost_admin_user_list','lost_user_new','lost_admin_edit_customer', 'lost_admin_user_service_details'] %}activeLink{% endif %}" href="#"><i class="fa fa-user"></i><span>Users</span><i class="fa fa-angle-left pull-right"></i></a>
+			<ul class="treeview-menu">
+				<li> <a class="{% if c_path in ['lost_admin_user_list','lost_user_new','lost_admin_edit_customer', 'lost_admin_user_service_details'] %}activeLink{% endif %}" href="{{ path('lost_admin_user_list') }}"><i class="fa fa-user"></i><span>Users</span></a>
+				<li><a class="{% if c_path in ['lost_admin_user_purchase','lost_admin_user_purchase_export'] %}activeLink{% endif %}" href="{{ path('lost_admin_user_purchase') }}"><i class="fa fa-money"></i><span>Purchase History</span></a> </li>
+				<li><a class="{% if c_path in ['lost_admin_user_log'] %}activeLink{% endif %}" href="{{ path('lost_admin_user_log') }}"><i class="fa fa-user-plus"></i><span>Users Login Log</span></a></li>
+			        <li><a class="{% if c_path in ['lost_admin_credit_list','lost_admin_credit_new','lost_admin_credit_edit'] %}activeLink{% endif %}" href="{{ path('lost_admin_credit_list') }}"><i class="fa fa-pencil-square-o"></i><span>Credit</span></a></li>
+                        </ul>
+		</li>
+		<li><a class="{% if c_path in ['lost_admin_list','lost_admin_new','lost_admin_edit'] %}activeLink{% endif %}" href="#"><i class="fa fa-user-secret"></i><span>Admins</span><i class="fa fa-angle-left pull-right"></i></a>
+			<ul class="treeview-menu">
+				<li><a class="{% if c_path in ['lost_admin_list','lost_admin_new','lost_admin_edit'] %}activeLink{% endif %}" href="{{ path('lost_admin_list') }}"><i class="fa fa-user-secret"></i><span>Admins</span></a></li>
+				<li><a class="{% if c_path in ['lost_admin_group_list','lost_admin_group_new','lost_admin_group_edit'] %}activeLink{% endif %}" href="{{ path('lost_admin_group_list') }}"><i class="fa fa-user-secret"></i><span>Groups</span></a></li>
+				<li><a class="{% if c_path in ['lost_admin_permission_list','lost_admin_permission_new','lost_admin_permission_edit'] %}activeLink{% endif %}" href="{{ path('lost_admin_permission_list') }}"><i class="fa fa-user-secret"></i><span>Permissions</span></a></li>
+				<li><a class="{% if c_path == 'lost_admin_audit_logs' %}activeLink{% endif %}" href="{{ path('lost_admin_audit_logs') }}"><i class="fa fa-pencil-square-o"></i><span>Audit Logs</span></a></li>
+				<li><a class="{% if c_path in ['lost_admin_compensation_list','lost_admin_compensation_new','lost_admin_compensation_edit'] %}activeLink{% endif %}" href="{{ path('lost_admin_compensation_list') }}"><i class="fa fa-user-secret"></i><span>Compensations</span></a></li>
+                                
+			</ul>
+		</li>
+		<li><a class="{% if c_path in ['lost_admin_email_campaign_list','lost_admin_email_campaign_new','lost_admin_email_campaign_edit'] %}activeLink{% endif %}" href="{{ path('lost_admin_email_campaign_list') }}"><i class="fa fa-envelope"></i><span>Email Campaigns</span></a></li>
+		<li><a class="{% if c_path in ['lost_admin_ip_zone_list','lost_admin_ip_zone_new','lost_admin_ip_zone_edit'] %}activeLink{% endif %}" href="#"><i class="fa fa-cogs"></i><span>Service</span><i class="fa fa-angle-left pull-right"></i></a>
+			<ul class="treeview-menu">
+				<li><a class="{% if c_path in ['lost_admin_service_list','lost_admin_service_new','lost_admin_service_edit'] %}activeLink{% endif %}" href="{{ path('lost_admin_service_list') }}"><i class="fa fa-cogs"></i><span>Services</span></a></li>
+				<li><a class="{% if c_path in ['lost_admin_ip_zone_list','lost_admin_ip_zone_new','lost_admin_ip_zone_edit'] %}activeLink{% endif %}" href="{{ path('lost_admin_ip_zone_list') }}"><i class="fa fa-cogs"></i><span>Service Location</span></a></li>
+				<li><a class="{% if c_path in ['lost_countrywiseservice_list','lost_countrywiseservice_new','lost_countrywiseservice_edit'] %}activeLink{% endif %}" href="{{ path('lost_countrywiseservice_list') }}"><i class="fa fa-cogs"></i><span>Service Country</span></a></li>
+			</ul>
+		</li>
+		<li><a class="{% if c_path in ['lost_admin_support_category_list','lost_admin_support_category_new', 'lost_admin_support_category_edit', 'lost_admin_support_location_list', 'lost_admin_support_location_new', 'lost_admin_support_location_edit'] %}activeLink{% endif %}" href="#"><i class="fa fa-life-ring"></i><span>Support</span><i class="fa fa-angle-left pull-right"></i></a>
+			<ul class="treeview-menu">
+				<li><a class="{% if c_path in ['lost_admin_support_category_list','lost_admin_support_category_new','lost_admin_support_category_edit'] %}activeLink{% endif %}" href="{{ path('lost_admin_support_category_list') }}"><i class="fa fa-cogs"></i><span>Support Category</span></a></li>
+				<li><a class="{% if c_path in ['lost_admin_support_location_list','lost_admin_support_location_new','lost_admin_support_location_edit'] %}activeLink{% endif %}" href="{{ path('lost_admin_support_location_list') }}"><i class="fa fa-cogs"></i><span>Support Location</span></a></li>
+			</ul>
+		</li>
+		
+		<li><a class="{% if c_path in ['lost_admin_setting_list','lost_admin_setting_new','lost_admin_setting_edit'] == 'lost_admin_setting_list' %}activeLink{% endif %}" href="#"><i class="fa fa-cog"></i><span>Settings</span><i class="fa fa-angle-left pull-right"></i></a>
+			 <ul class="treeview-menu">
+				<li><a class="{% if c_path in ['lost_admin_setting_list','lost_admin_setting_new','lost_admin_setting_edit'] == 'lost_admin_setting_list' %}activeLink{% endif %}" href="{{ path('lost_admin_setting_list') }}"><i class="fa fa-cogs"></i class="fa fa-angle-left pull-right"><span>Settings</span></a></li>
+				<li><a class="{% if c_path in ['lost_admin_global_discount_list','lost_admin_global_discount_new','lost_admin_global_discount_edit'] %}activeLink{% endif %}" href="{{ path('lost_admin_global_discount_list') }}"><i class="fa fa-cogs"></i><span>Global Bundle Discount</span></a></li>
+			</ul>
+		</li>
+		
+		{% elseif (app.user.group == 'Manager') %}
+			
+		<li><a class="{% if c_path in ['lost_admin_user_list','lost_user_new','lost_admin_edit_customer'] %}activeLink{% endif %}" href="{{ path('lost_admin_user_list') }}"><i class="fa fa-user"></i><span>Users</span></a></li>	    	
+		<li><a class="{% if c_path in ['lost_admin_user_purchase','lost_admin_user_purchase_export'] %}activeLink{% endif %}" href="{{ path('lost_admin_user_purchase') }}"><i class="fa fa-money"></i><span>Purchase History</span></a></li>
+		<li><a class="{% if c_path in ['lost_admin_list','lost_admin_new','lost_admin_edit'] %}activeLink{% endif %}" href="{{ path('lost_admin_list') }}"><i class="fa fa-user-secret"></i><span>Admins</span></a></li>		    
+		{% elseif (app.user.group == 'Cashier') %}
+			
+		<li><a class="{% if c_path in ['lost_admin_user_list','lost_user_new','lost_admin_edit_customer'] %}activeLink{% endif %}" href="{{ path('lost_admin_user_list') }}"><i class="fa fa-user"></i><span>Users</span></a></li>
+		<li><a class="{% if c_path in ['lost_admin_user_purchase','lost_admin_user_purchase_export'] %}activeLink{% endif %}" href="{{ path('lost_admin_user_purchase') }}"><i class="fa fa-money"></i><span>Purchase History</span></a></li>
+		<li><a class="{% if c_path in ['lost_admin_list','lost_admin_new','lost_admin_edit'] %}activeLink{% endif %}" href="{{ path('lost_admin_list') }}"><i class="fa fa-user-secret"></i><span>Admins</span></a></li>
+		{% elseif (app.user.group == 'Helpdesk') %}
+			
+		<li><a class="{% if c_path in ['lost_admin_user_list','lost_user_new','lost_admin_edit_customer'] %}activeLink{% endif %}" href="{{ path('lost_admin_user_list') }}"><i class="fa fa-user"></i><span>Users</span></a></li>
+		<li><a class="{% if c_path in ['lost_admin_user_purchase','lost_admin_user_purchase_export'] %}activeLink{% endif %}" href="{{ path('lost_admin_user_purchase') }}"><i class="fa fa-money"></i><span>Purchase History</span></a></li>
+		<li><a class="{% if c_path in ['lost_admin_list','lost_admin_new','lost_admin_edit'] %}activeLink{% endif %}" href="{{ path('lost_admin_list') }}"><i class="fa fa-user-secret"></i><span>Admins</span></a></li>
+		{% elseif (app.user.group == 'Read Only') %}
+			
+		<li><a class="{% if c_path in ['lost_admin_user_list','lost_user_new','lost_admin_edit_customer'] %}activeLink{% endif %}" href="{{ path('lost_admin_user_list') }}"><i class="fa fa-user"></i><span>Users</span></a></li>
+		<li><a class="{% if c_path in ['lost_admin_user_purchase','lost_admin_user_purchase_export'] %}activeLink{% endif %}" href="{{ path('lost_admin_user_purchase') }}"><i class="fa fa-money"></i><span>Purchase History</span></a></li>
+		<li><a class="{% if c_path in ['lost_admin_list','lost_admin_new','lost_admin_edit'] %}activeLink{% endif %}" href="{{ path('lost_admin_list') }}"><i class="fa fa-user-secret"></i><span>Admins</span></a></li>
+		    
+		{% endif %}
+{# 		<li><a href="{{ path('admin_logout') }}"><i class="fa fa-sign-out"></i><span>Logout</span></a></li>#}
+	{% endif %}
+</ul>

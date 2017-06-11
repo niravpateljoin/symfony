@@ -1,0 +1,203 @@
+{% extends "LostUserBundle::layout.html.twig" %}
+{% block body %}
+{% block fos_user_content %}
+{% trans_default_domain 'FOSUserBundle' %}
+<div class="innerBg uversecont">
+    <div class="container min_cont_hight">
+                
+              <div class="heading">
+		            <div class="col-xs-12">
+		            </div>
+		        </div>  
+             <div class="msgBoxContainer">
+				<div class="col-xs-12">
+                	{% include "LostUserBundle::flashMessage.html.twig" %}
+				</div>
+             </div>
+            <div class="headstyl" style="margin: 10px 0; float: left; width: 100%;">
+            	<div class="col-xs-10"><h3 style="line-height: 40px;">Purchase Details</h3></div>
+            	<div class="col-xs-2" style="padding-top:6px; text-align: right; ">
+            		<a href="{{path('lost_purchase_history_exportpdf')}}" class="btn btn-default" id="export_pdf" {{ (pagination|length > 0)?'':'disabled="disabled"' }} >Export PDF</a>
+				</div>
+            </div>
+            <div class="col-xs-12">
+            <table class="table table-bordered table-hover">
+                <tr>                    
+                    <th {% if pagination.isSorted('po.orderNumber') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Order Number', 'po.orderNumber') }}</th>
+                    <th {% if pagination.isSorted('s.name') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Service', 's.name') }}</th>
+                    <th {% if pagination.isSorted('us.packageName') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Package', 'us.packageName') }}</th>
+                    <th {% if pagination.isSorted('us.payableAmount') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Paid Amount', 'us.payableAmount') }}</th>
+                    <th {% if pagination.isSorted('us.status') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Status', 'us.status') }}</th>
+                    <th {% if pagination.isSorted('us.activationDate') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Activation Date', 'us.activationDate') }}</th>
+                    <th {% if pagination.isSorted('us.expiryDate') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Expiration Date', 'us.expiryDate') }}</th>
+                    <th {% if pagination.isSorted('po.createdAt') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Purchase Date', 'po.createdAt') }}</th>
+                    <th {% if pagination.isSorted('po.compensationValidity') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Compensation validity', 'po.compensationValidity') }}</th>
+                    <th {% if pagination.isSorted('pm.name') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Payment Method', 'pm.name') }}</th>
+                    <th {% if pagination.isSorted('us.refundAmount') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Refund Amount', 'us.refundAmount') }}</th>                    
+                </tr>
+                   
+	            {% if(pagination|length > 0) %}
+                    {% for record in pagination %}
+                    
+                    	{% set serviceStatus = '' %}
+                    	{% set activationDate = '' %}
+                    	{% set expiryDate = '' %}
+                    	{% if record.userService %}
+                    	
+                    		{% set serviceStatus = record.userService.displayStatus %}
+                    		{% set activationDate = record.userService.activationDate|date('M-d-Y') %}
+                    		{% set expiryDate = record.userService.expiryDate|date('M-d-Y') %}
+                    		
+                    	{% endif %}
+                    	
+                    	{% set packageName = record.packageName %}
+                    	{% if record.isCredit == 1 %}
+                    		{% set packageName = 'Credit Purchase' %}
+                    	{% endif %}
+						<tr>                            
+							<td>
+                                {% if record.purchaseOrder %}
+                                    {{ record.purchaseOrder.orderNumber ? record.purchaseOrder.orderNumber : '' }}
+                                {% endif %}
+                            </td>
+							<td>{% if record.service %}{{ record.service.name  }}{% endif %}</td>
+							<td>{{ packageName }}</td>
+                            <td>{{ record.payableAmount }}</td>
+                            <td>{{ serviceStatus }}</td>                            
+                            <td>{{ activationDate }}</td>
+                            <td>{{ expiryDate }}</td>
+                            <td>{% if (record.purchaseOrder is not null) %}{{ record.purchaseOrder.createdAt|date('M-d-Y H:i:s') }}{% endif %}</td>
+                            <td>
+                                {% if record.purchaseOrder %}
+                                    {{ record.purchaseOrder.compensationValidity ? record.purchaseOrder.compensationValidity~'hours' : '' }}</td>
+                                {% endif %}        
+                            <td>
+                            		{% if (record.purchaseOrder is not null) %}
+                            			{% if record.purchaseOrder.paymentMethod is not null %}
+                            				{{ record.purchaseOrder.paymentMethod.name }}
+										{% endif %}
+									{% endif %}
+							</td>
+                        	<td>
+                                {% if record.userService and record.userService.refundAmount > 0 %}
+                                	{{ record.userService.refundAmount }}                                            
+                                {% else %}
+                                    {% if record.userService and record.userService.status == 1 and 'now'|date('M-d-Y') < expiryDate %}
+                                        <a href="{{ path('lost_customer_refund', {'id': record.id, 'userId' : record.user.id }) }}">Refund</a>
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+						</tr>
+                    {% endfor %}
+                {% else %}
+                	<tr><td colspan="11" align="center">No Record Found!</td></tr>
+                {% endif %}
+                 
+            </table>
+            
+            <!-- <table id="purchaseHistoryTable" cellpadding="0" cellspacing="0" border="0" class="datatable table table-striped table-bordered table-hover">
+				<thead>
+					<tr>
+						<th></th>
+                       	<th>Order Number</th>
+                       	<th>Total Amount</th>
+                       	<th>Refund Amount</th>
+                       	<th>Payment Method</th>
+                       	<th>Payment Status</th>
+                       	<th>Type</th>
+                       	<th>Service</th>
+                       	<th>Purchase Date</th>
+                   	</tr>
+				</thead>
+			</table> -->
+            
+            </div>
+            
+            <div class="navigation">
+                {{ knp_pagination_render(pagination) }}
+            </div>
+            
+    </div>
+</div>
+{% endblock fos_user_content %}
+{% endblock body %}
+
+{% block javascripts %}
+    {{ parent() }}    
+    <script type="text/javascript">
+    $(document).ready(function(){
+        
+    	/*var dTable = $('#purchaseHistoryTable').dataTable({
+            "oLanguage": {
+                "sLengthMenu": "Display _MENU_ Records",
+                "sZeroRecords": "<center>No Record Found!</center>",
+                "sInfo": "Showing _START_ to _END_ of _TOTAL_ Records",
+                "sInfoEmpty": "Showing 0 to 0 of 0 records",
+                "sInfoFiltered": "(filtered from _MAX_ total records)"
+            },
+            responsive: false,
+            bJQueryUI: false,
+            bProcessing: true,
+            bServerSide: true,
+            bFilter: true,            
+            iDisplayLength: '10',
+            sAjaxSource: "{{ path('lost_user_purchase_history_json') }}",
+            fnDrawCallback: function () {
+                
+            },
+            aoColumns: [
+				{"sClass":"details-control","sDefaultContent": "", "bSearchable": false, "bSortable": false},
+                {"sName": "orderNumber"},
+                {"sName": "totalAmount"},
+                {"sName": "refundAmount"},
+                {"sName": "paymentMethod"},
+                {"sName": "paymentStatus"},
+                {"sName": "type"},
+                {"sName": "service"},
+                {"sName": "purchaseDate"}
+            ],
+            aaSorting: [[8, 'desc']]
+        });
+    	
+    	// Add event listener for opening and closing details
+        jQuery('#purchaseHistoryTable tbody').on('click', 'td.details-control', function () {
+        	
+        	console.log(dTable);
+            //var tr = $(this).closest('tr');
+            
+            var nTr = $(this).parents('tr')[0];
+            if ( dTable.fnIsOpen(nTr) )
+            {
+                
+                //this.src = "../examples_support/details_open.png";
+                dTable.fnClose( nTr );
+            }
+            else
+            {
+                
+                //this.src = "../examples_support/details_close.png";
+                dTable.fnOpen( nTr, fnFormatDetails(dTable, nTr), 'details' );
+            }                        
+        });*/    	    	    	
+    });
+    
+    function fnFormatDetails ( dTable, nTr )
+    {
+        var aData = dTable.fnGetData( nTr );
+        
+        var sOut = '<table class="table table-bordered table-responsive" style="width:800px;">';
+        	sOut += '<tbody>';
+        	sOut += '<tr>';
+        		sOut += '<td>Pickup Staff:</td>';
+				sOut += '<td>John Mark</td>';
+				sOut += '<td>Delivery Staff:</td>';
+				sOut += '<td></td>';
+			sOut += '</tr>';
+			sOut += '</tbody>';
+			sOut += '</table>';
+        
+        return sOut;
+    }
+    
+	</script>
+{% endblock javascripts %}

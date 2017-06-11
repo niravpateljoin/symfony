@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+		<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <title>{% block title %}Welcome Lost Admin | Dashboard{% endblock %}</title>
+        {% block stylesheets %}
+            <link href="{{ asset('bundles/Lostuser/css/bootstrap.css') }}" rel="stylesheet">
+            <link href="{{ asset('bundles/Lostuser/css/bootstrap-theme.min.css') }}" rel="stylesheet">
+            <link href="{{ asset('bundles/Lostuser/css/slick.css') }}" rel="stylesheet">
+            <!--<link href="{{ asset('bundles/Lostuser/css/main.css') }}" rel="stylesheet">
+            <link href="{{ asset('bundles/Lostuser/css/responsive.css') }}" rel="stylesheet"> -->
+            
+			
+			<!-- FontAwesome 4.3.0 -->
+			<link href="{{ asset('https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css') }}" rel="stylesheet">
+			
+			<!-- Ionicons 2.0.0 -->
+			<link href="{{ asset('https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css') }}" rel="stylesheet">
+			
+			<!-- Theme style -->
+			<link href="{{ asset('bundles/lostadmin/css/AdminLTE.min.css') }}" rel="stylesheet">
+			<link href="{{ asset('bundles/lostadmin/css/admin.css') }}" rel="stylesheet">
+			
+			<!-- AdminLTE Skins. Choose a skin from the css/skins
+			folder instead of downloading all of them to reduce the load. -->
+			<link href="{{ asset('bundles/lostadmin/css/skins/_all-skins.min.css') }}" rel="stylesheet">
+			
+			<!-- iCheck -->
+			<link href="{{ asset('bundles/lostadmin/plugins/iCheck/flat/blue.css') }}" rel="stylesheet">
+			
+			<!-- Morris chart -->
+			<link href="{{ asset('bundles/lostadmin/plugins/morris/morris.css') }}" rel="stylesheet">
+			
+			<!-- jvectormap -->
+			<link href="{{ asset('bundles/lostadmin/plugins/jvectormap/jquery-jvectormap-1.2.2.css') }}" rel="stylesheet">
+			
+			<!-- Date Picker -->
+			<link href="{{ asset('bundles/lostadmin/plugins/datepicker/datepicker3.css') }}" rel="stylesheet">
+			
+			<!-- Daterange picker -->
+			<link href="{{ asset('bundles/lostadmin/plugins/daterangepicker/daterangepicker-bs3.css') }}" rel="stylesheet">
+			
+			<!-- bootstrap wysihtml5 - text editor -->
+			<link href="{{ asset('bundles/lostadmin/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css') }}" rel="stylesheet">
+			
+        {% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+		
+		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		 <!--[if lt IE 9]>
+			<script src="{{ asset('bundles/lostadmin/js/html5shiv.min.js') }}"></script>
+            <script src="{{ asset('bundles/lostadmin/js/respond.min.js') }}"></script>
+		<![endif]-->
+    </head>
+    
+    <body class="skin-purple sidebar-mini login-page"> 
+        {% block header %}
+            <div>
+                {#{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                    {{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }} |
+                    <a href="{{ path('fos_user_security_logout') }}">
+                        {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}
+                    </a>
+                {% endif %}#}
+            </div>
+           {# {% for type, messages in app.session.flashbag.all() %}
+                {% for message in messages %}
+                    <div class="flash-{{ type }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}#}
+			
+      			
+        {% endblock header %}
+		
+		
+		
+            {% block body %}{% endblock %}
+		
+        {% block footer %}
+		
+            {# <footer class="main-footer">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 copyright">© 2015. Lost Telecom Group - Lost-Afghanistan. All rights reserved.</div>
+                    </div>
+                </div>
+            </footer> #}
+			
+        {% endblock footer %}
+		
+        {# #}
+        {% block javascripts %}
+            <script src="{{ asset('bundles/Lostuser/js/jquery-2.1.1.min.js') }}"></script>
+            <script src="{{ asset('bundles/Lostuser/js/jquery.validation.min.js') }}"></script>
+            <script src="{{ asset('bundles/Lostuser/js/jquery-migrate-1.1.1.min.js') }}"></script>
+            <script src="{{ asset('bundles/Lostuser/js/jquery-ui.min.js') }}"></script>
+            <script src="{{ asset('bundles/Lostuser/js/bootstrap.min.js') }}"></script>
+            <script src="{{ asset('bundles/Lostuser/js/modernizr.js') }}"></script>
+            <script src="{{ asset('bundles/Lostuser/js/placeholders.min.js') }}"></script>
+            <script src="{{ asset('bundles/Lostuser/js/selectivizr-min.js') }}"></script>
+            <script src="{{ asset('bundles/Lostuser/js/main.js') }}"></script>
+			
+        {% endblock %}
+    </body>
+</html>

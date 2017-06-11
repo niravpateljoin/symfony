@@ -1,0 +1,475 @@
+{% extends "LostUserBundle::layout.html.twig" %}
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+    .btn-default:hover, .btn-default:focus {
+		background: #8F8B8B;
+		border: solid 1px #AAAAAA;
+		color: #FFFFFF;
+	}
+	</style>
+{% endblock stylesheets %}
+{% block body %}
+    {% block fos_user_content %} 
+        {% trans_default_domain 'FOSUserBundle' %}
+		<div class="innerBg uversecont">
+			<div class="container min_cont_hight">
+		        <div class="heading">
+		            <div class="col-xs-12">
+		                <h2>Review And Change Your Current Plans And Services</h2>
+		            </div>
+		        </div>
+        		<div class="msgBoxContainer"><div class="col-xs-12">{% include "LostUserBundle::flashMessage.html.twig" %}</div></div>
+				
+				{% if checkDeersAuthentication|length > 0 and IPTV in checkDeersAuthentication|keys and checkDeersAuthentication['IPTV'] == '1' %}
+
+			        <div class="msgBoxContainer">
+			            <div class="col-xs-12">  
+			                <div class="alert alert-info " role="alert">
+			                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+			                    <p>Thank you for registering with Lost!  Each service offering below details the options available for your location.  
+			                        If you are a US Service Member or Government Employee with CAC card, you can authenticate against the DEERS database so that additional Premium IPTV channels and plans can be purchased.  
+			                        DEERS authentication requires you to have a www.shopmyexchange.com account.</p>
+			                    <p>If you do not have a www.shopmyexchange.com account already -- click this link and register with them: <a href="https://www.shopmyexchange.com/account/register">Click Here</a></p>
+			                    <p>Once you have a www.shopmyexchange.com you can <a href="{{ path('lost_user_deers_auth') }}">click this link</a> to login and clear DEERS authentication.</p>
+			                    <p>All disabled purchase options will be enabled and ready for use once DEERS authentication is completed.</p>
+			
+								{#In order to complete your registration process, You have to do DEERS authentication. Please <a href="javascript:void(0);" data-toggle="modal" data-target="#deersModal" >Click Here</a> to do DEERS authentication. #}
+			                </div>
+			            </div>
+			        </div>
+				{% endif %} 
+				
+				{% if checkDeersAuthentication|length > 0 and IPTV in checkDeersAuthentication|keys and checkDeersAuthentication['IPTV'] == '2' %}
+
+			        <div class="msgBoxContainer">
+			            <div class="col-xs-12">
+			
+			                <div class="alert alert-info " role="alert">
+			                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+			                    <p>This plan requires DEERS authentication in order to purchase. If you are an eligible US Service Member or government employee with CAC card--you can authenticate against DEERS by clicking this link: <a href="{{ path('lost_user_deers_auth') }}">Click Here</a> or you can reauthenticate at any time by visiting the Profile tab on this site.</p>
+			                </div>
+			            </div>
+			        </div>
+				{% endif %} 
+
+				{% if (user.isEmailVerified != 1) %}
+			        <div class="msgBoxContainer">
+			            <div class="col-xs-12">  
+			                <div class="alert alert-info">
+			                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+			                    Your email address not verified yet. With out email verification you can make only one purchase. <a href="{{ path('lost_user_email_verification_failed', { 'token': user.confirmationToken }) }}">Click to resend verification email</a><br />
+			                </div>
+			            </div>
+			        </div>
+				{% endif %}
+
+
+				<div class="col-xs-12 col-sm-8 col-md-8">                                                               
+            		<div class="row">       
+
+					{% if IPTV in summaryData.AvailableServicesOnLocation %}
+
+						<div class="col-xs-12 col-sm-5 col-md-5">
+		                    <div class="colcont">
+		                        <h4>IPTV</h4>
+		                        
+		                        {% set isIPTVButtonDisplay = 0 %}
+		                        {% set IPTVButtonLabel 	   = 'Select Plan' %}
+		                        {% set isIPTVInOnlyPurchased = 0 %}
+		                        {% set isNewIPTVActivation = 1 %}
+		                        
+		                        {% if summaryData.IsIPTVAvailabledInCart == 1 or summaryData.IsIPTVAvailabledInPurchased == 1 %}
+		                        
+		                        	{% set isNewIPTVActivation = 0 %}
+		                        
+		                        	{% if summaryData.IsIPTVAvailabledInCart == 1 %}
+		                        	
+		                        		{% set IPTVButtonLabel 	   = 'Added' %}
+		                        		{% if summaryData.IsIPTVAvailabledInPurchased == 1 %}
+		                        			{% set IPTVButtonLabel 	   = 'Modified' %}
+		                        		{% endif %}
+		                        	{% elseif summaryData.IsIPTVAvailabledInPurchased == 1 %}
+		                        	
+		                        		{% set isIPTVInOnlyPurchased = 1 %}
+		                        		{% set isIPTVButtonDisplay   = 1 %}
+		                        		{% set IPTVButtonLabel 	   = 'Upgrade' %}
+		                        	{% endif %}
+		                        	
+		                        	<figure>
+		                        		<img src="{{ asset('bundles/Lostuser/images/uVerseTv.png') }}" alt="uVerseTv" width="183" height="111" />
+		                        		{% if isIPTVButtonDisplay == 1 %}
+		                        			<p><a href="{{ path('lost_service_plan', {'service': IPTV })}}" class="btn-sm btn-default">{{ IPTVButtonLabel }}</a></p>
+		                        		{% else %}
+		                        			<p><font color="green"><i class="checkIco"></i><b>{{ IPTVButtonLabel }}</b></font></p>
+		                        		{% endif %}		                        		
+			                        </figure>
+			                        
+			                        <div class="contblk">
+			                        	<span>
+			                        		<font color="orange">                  
+												<b>{{ (isIPTVInOnlyPurchased)?"You Currently Have:":((summaryData.IsIPTVAvailabledInPurchased))?"You've Updated":"You've Added:" }}</b>
+											</font>
+										</span>				                        										 
+									</div>
+			                        
+			                        <div class="contblk">			                        	
+										<span class="pull-left titleSpan"><b>IPTV Service</b></span>				                        	
+										
+										{% set packageIPTV = '' %}
+			                            {% if summaryData.IsIPTVAvailabledInCart == 1 %}
+			                            
+			                            	{% set packageIPTV = summaryData.Cart.IPTV.RegularPack %}
+			                            {% elseif summaryData.IsIPTVAvailabledInPurchased == 1 %}
+			                            
+			                            	{% set packageIPTV = summaryData.Purchased.IPTV.RegularPack %}
+			                            {% endif %}
+			                            
+			                            {% if packageIPTV %}
+			                            <ul>  
+											{% for iptvPackage in packageIPTV %}
+			                                	<li>
+			                                		{{iptvPackage.packageName}}
+			                                		
+			                                		{% if summaryData.IsIPTVAvailabledInCart == 1 %} 
+			                                		<span class="pull-right">
+			                                			<a href='{{ path('lost_service_plan', {'service': IPTV }) }}'>Change</a> |
+				                                		<a href='{{ path('lost_service_remove', {'service': IPTV }) }}'>Remove</a>
+				                                	</span>
+				                                	{% endif %}
+			                                	</li>                                            
+											{% endfor%}
+			                            </ul>              
+			                            {% endif %}                                   
+			                        </div>
+			                        
+			                        {% if summaryData.IsAddOnAvailabledInCart == 1 or summaryData.IsAddOnAvailabledInPurchased == 1 %}
+			                        
+			                        	{% set packageAddOn = '' %}
+			                        	{% if summaryData.IsAddOnAvailabledInCart == 1 %}
+			                            
+			                            	{% set packageAddOn = summaryData.Cart.IPTV.AddOnPack %}			                            	
+			                            {% elseif summaryData.IsAddOnAvailabledInPurchased == 1 %}
+			                            
+			                            	{% set packageAddOn = summaryData.Purchased.IPTV.AddOnPack %}
+			                            {% endif %}
+			                            
+			                            <div class="contblk">
+			                            	<span class="pull-left titleSpan"><b>Additional Channels</b></span>		
+				                            <span class="pull-right">
+				                            	<a href='{{ path('lost_service_plan', {'service': IPTV, 'addon' : true }) }}'>Add</a>				                            	
+				                            </span>
+				                            
+				                            <ul>
+												{% for addOnPackage in packageAddOn %}
+				                                	<li>
+				                                		{{ addOnPackage.packageName }}
+				                                		
+				                                		{% if summaryData.IsAddOnAvailabledInCart == 1 %}
+				                                		<span class="pull-right">
+				                                			<a href='{{ path('lost_service_remove', {'service': IPTV, 'addon' : true, 'id':addOnPackage.servicePurchaseId }) }}'>Remove</a>
+				                                		</span>
+				                                		{% endif %}
+				                                	</li>
+												{% endfor%}   	                                        
+				                            </ul>
+			                            </div>
+			                            
+			                        {% else %}
+				                        <div class="contblk">
+				                            <h4>Additional Channels
+				                            	<span class="pull-right"><a href='{{ path('lost_service_plan', {'service': IPTV, 'addon' : true }) }}'>Add</a></span>
+				                            </h4>
+				                            <p>Add Premium, Sports, and International channels, plus subscription on demand</p>
+				                        </div>
+			                        {% endif %}
+			                    
+			                    {% endif %}
+			                    
+			                    {% if isNewIPTVActivation == 1%}
+			                    	<figure>
+			                            <img src="{{ asset('bundles/Lostuser/images/uVerseTv.png') }}" alt="uVerseTv" width="183" height="111" />
+			                            <p>											
+											{% if summaryData.IPTVButtonEnabled == 1 %}
+			                                <a href="{{ path('lost_service_plan', {'service': IPTV })}}" class="btn-sm btn-default">Add to Bundle</a>
+											{% else %}
+			                                <div id="iptv-plan">
+			                                    <input type="button" value="Select Plan" class="btn-sm btn-default" id="btn-iptv-plan"/>
+			                                </div>
+											{% endif %}
+			                            </p>
+			                        </figure>
+			                        <div class="contblk">
+			                            <h2>You Can Get:</h2>
+			                            <h4>TV Package</h4>
+			                            <p>Choose from a range of prices and programming</p>
+			                        </div>
+			                        <div class="contblk">
+			                            <h4>Additional Channels</h4>
+			                            <p>Add Premium, Sports, and International channels, plus subscription on demand</p>
+			                        </div>    
+		                        {% endif %}
+							</div>
+						</div> 											
+					{% endif %}
+
+                    {% if ISP in summaryData.AvailableServicesOnLocation %}
+                    
+                    	<div class="col-xs-12 col-sm-5 col-md-5">
+							<div class="colcont">
+								<h4>ISP / INTERNET</h4>
+			                        					
+								{% set isISPButtonDisplay = 0 %}
+		                        {% set ISPButtonLabel 	  = 'Select Plan' %}		                        
+		                        {% set isISPInOnlyPurchased = 0 %}
+		                        {% set isNewISPActivation = 1 %}
+											
+			                    {% if summaryData.IsISPAvailabledInCart == 1 or summaryData.IsISPAvailabledInPurchased == 1 %}
+			                        
+			                        
+			                        {% set isNewISPActivation = 0 %}
+		                        
+		                        	{% if summaryData.IsISPAvailabledInCart == 1 %}
+		                        	
+		                        		{% set ISPButtonLabel 	   = 'Added' %}
+		                        		{% if summaryData.IsISPAvailabledInPurchased == 1 %}
+		                        			{% set ISPButtonLabel 	   = 'Modified' %}
+		                        		{% endif %}
+		                        	{% elseif summaryData.IsISPAvailabledInPurchased == 1 %}
+		                        	
+		                        		{% set isISPInOnlyPurchased = 1 %}
+		                        		{% set isISPButtonDisplay   = 1 %}		                        		
+		                        		{% set ISPButtonLabel 	   = 'Upgrade' %}
+		                        	{% endif %}
+			                        
+		                        	<figure>
+		                        		<img src="{{ asset('bundles/Lostuser/images/uVerseInternet.png') }}" alt="uVerseInternet" width="183" height="111" />
+		                        		
+		                        		{% if isISPButtonDisplay == 1 %}
+		                        		
+		                        			<p><a href="{{ path('lost_service_plan', {'service': ISP })}}" class="btn-sm btn-default">{{ ISPButtonLabel }}</a></p>
+		                        		{% else %}
+		                        		
+		                        			<p><font color="green"><i class="checkIco"></i><b>{{ ISPButtonLabel }}</b></font></p>
+		                        		{% endif %}		                        				                        		
+			                        </figure>
+			                        
+			                        <div class="contblk">
+			                        	<span>
+			                        		<font color="orange">                  
+												<b>{{ (isISPInOnlyPurchased)?"You Currently Have:":((summaryData.IsISPAvailabledInPurchased))?"You've Updated":"You've Added:" }}</b>
+											</font>
+										</span>				                        										 
+									</div>
+			                        
+			                        <div class="contblk">			                        	
+										<span class="pull-left titleSpan"><b>Internet Speed</b></span>				                        	
+										
+										{% set packageISP = '' %}
+			                            {% if summaryData.IsISPAvailabledInCart == 1 %}
+			                            
+			                            	{% set packageISP = summaryData.Cart.ISP.RegularPack %}
+			                            {% elseif summaryData.IsISPAvailabledInPurchased == 1 %}
+			                            
+			                            	{% set packageISP = summaryData.Purchased.ISP.RegularPack %}
+			                            {% endif %}
+			                            
+			                            {% if packageISP %}
+			                            <ul>  
+											{% for ispPackage in packageISP %}
+			                                	<li>
+			                                		{{ispPackage.packageName}}
+			                                		
+			                                		{% if summaryData.IsISPAvailabledInCart == 1 %} 
+			                                		<span class="pull-right">
+			                                			<a href='{{ path('lost_service_plan', {'service': ISP }) }}'>Change</a> |
+			                                			
+			                                			{% set removeBothService = 0 %}
+			                                			
+			                                			{% if summaryData.IsISPAvailabledInPurchased == 0 %}
+			                                			
+				                                			{% if summaryData.IsISPAvailabledInCart == 1 and summaryData.IsIPTVAvailabledInCart == 1 %}
+				                                			
+			                                					{% if summaryData.Cart.IPTV.CurrentIPTVPackvalidity == summaryData.Cart.ISP.CurrentISPPackvalidity %}
+				                                					{% set removeBothService = 1 %}
+				                                				{% endif %}
+				                                			{% endif %}
+			                                			{% endif %}
+			                                			
+			                                			{% if removeBothService == 1 %}
+			                                			
+			                                				<a href="javascript:void(0)" rel="{{ path('lost_service_remove', {'service': ISP, 'both': removeBothService }) }}" onclick="confirmBox('','btnRemoveISP','','')" id="btnRemoveISP">Remove</a>			                                				
+			                                			{% else %}
+			                                			
+			                                				<a href="{{ path('lost_service_remove', {'service': ISP, 'both': removeBothService }) }}">Remove</a>
+			                                			{% endif %}
+			                                			
+				                                	</span>
+				                                	{% endif %}
+			                                	</li>                                            
+											{% endfor%}
+			                            </ul>              
+			                            {% endif %}                                   
+			                        </div>				                    
+								{% endif %}
+								
+								{% if isNewISPActivation == 1 %}
+			                    	<figure>
+			                            <img src="{{ asset('bundles/Lostuser/images/uVerseInternet.png') }}" alt="uVerseInternet" width="183" height="111" /> 
+			                            <p>
+			                                <a href="{{ path('lost_service_plan', {'service': ISP })}}" class="btn-sm btn-default">{{ ISPButtonLabel }}</a>
+			                            </p>
+			                        </figure>
+			                        <div class="contblk">
+			                            <h2>You Can Get:</h2>
+			                            <h4>Internet Speed</h4>
+			                            <p>Choose from a range of price and programming</p>
+			                        </div>
+								{% endif %}
+							</div>
+						</div>
+                    {% endif %}
+            		</div>    
+        		</div>
+        		
+        		
+        		
+        		<!--  Summary Panel Start here -->
+        		{% if IPTV in summaryData.AvailableServicesOnLocation or ISP in summaryData.AvailableServicesOnLocation %}
+        		<div class="col-xs-12 col-sm-4 col-md-4">
+	        		<div id="ordersummary_tab" class="tabContainer">
+						<ul class="tabs">
+					    	<li><a href="account-summary/1">YOUR ACCOUNT*</a></li>
+			              	<li><a href="account-summary/2">VIEW UPDATES*</a></li>
+					  	</ul>					  	
+					</div>
+        		</div>
+        		{% endif %}    
+        		
+        		   		
+        	</div>            
+    	</div>
+
+{% endblock fos_user_content %}
+
+    <!-- Modal -->
+    <div class="modal fade" id="deersModal" tabindex="-1" role="dialog" aria-labelledby="deersModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+        {#<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>#}
+                    <h4 class="modal-title" id="myModalLabel">Deers Authentication</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Thank you for registering with Lost!  Each service offering below details the options available for your location.  If you are a US Service Member or Government Employee with CAC card, you can authenticate against the DEERS database so that additional Premium IPTV channels and plans can be purchased.  DEERS authentication requires you to have a <a href="{{ path('lost_user_deers_auth') }}">www.shopmyexchange.com</a> account.
+                    </p>
+                    <p>If you do not have a www.shopmyexchange.com account already -- click this link and register with them: <a href="https://www.shopmyexchange.com/account/register">Click Here</a></p>
+                    <p>Once you have a <a href="{{ path('lost_user_deers_auth') }}">www.shopmyexchange.com</a> you can click this link to login and clear DEERS authentication.</p>
+                    <p>All disabled purchase options will be enabled and ready for use once DEERS authentication is completed.</p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div id="ajax-loader-bx" style="display:none;">
+	<img id="loading" src="{{ asset('bundles/Lostuser/images/ajax_loader1.gif') }}"><br/>
+	<div id="loader-text">Please wait....</div>
+</div>
+
+{% endblock body %} 
+{% block javascripts %} 
+    {{ parent() }}
+    <!-- <script src="{{ asset('bundles/Lostuser/js/tabber.js') }}"></script>  -->
+
+    <script type="text/javascript">
+            
+	$(document).ready(function(){
+        	
+		$( "#ordersummary_tab" ).tabs({
+			active:{{ summaryData.CartAvailable }},
+			beforeLoad: function( event, ui ) {
+				$('li.ui-tabs-active > a.ui-tabs-anchor').removeClass('active');
+				$('#ajax-loader-bx').show();
+				ui.jqXHR.fail(function() {
+					ui.panel.html(
+					"Couldn't load this tab. We'll try to fix this as soon as possible. " +
+					"If this wouldn't be a demo." );
+				});
+			},
+			load: function( event, ui ) { 
+				$('#ajax-loader-bx').hide();
+				
+				$('li.ui-tabs-active > a').addClass('active');
+			}
+		});
+            
+		var toolTipText = "Internet service is required for IPTV Package.";
+             
+		$("#btn-iptv-plan").attr("title", toolTipText);
+		$('#btn-iptv-plan').poshytip({
+			className: 'tip-twitter',
+			showTimeout: 1,
+			alignTo: 'target',
+			alignX: 'center',
+			offsetY: 5,
+			allowTipHover: false,
+			fade: false,
+			slide: false,
+			followCursor: true                		
+		});
+		
+		/*if('{{ app.session.get('userService') == 0}}' || '{{ app.session.get('deers_auth') == 0}}'){
+        	$('#deersModal').modal({
+            	backdrop: 'static',
+            	keyboard: false
+        	})
+		}*/	
+	});
+
+	function confirmBox(msg,action,btnYtxt,btnNtxt){
+       	
+		if(btnYtxt == ''){
+     		btnYtxt = 'Yes';
+     	}
+     	if(btnNtxt == ''){
+     		btnNtxt = 'No';
+     	}
+     	if(action == 'btnRemoveISP'){
+     		
+     		msg = 'IPTV and Additional package will be remove with ISP package. Are you sure you want to remove ISP pack?';
+     	}
+       	
+       	$.confirm({
+			title: 'Alert!',
+			content: msg,
+			icon: '',
+		    confirmButton: btnYtxt,
+	        cancelButton: btnNtxt,
+	        confirmButtonClass: 'btn-info',
+	        cancelButtonClass: 'btn-danger',
+		    theme: 'white',
+	        animation: 'scale',
+	        animationSpeed: 400,
+	        animationBounce: 1.5,
+	        keyboardEnabled: false,
+	        container: 'body',
+		    cancel: function(){
+		    	
+		    },
+		    confirm: function(){
+		    	
+		    	if(action == 'btnRemoveISP'){
+		   
+		    		window.location.href = $('#btnRemoveISP').attr('rel');
+		    	}					
+		    },
+		    backgroundDismiss: false,
+	        autoClose: false,
+	        closeIcon: true
+		});
+	}
+    </script>    
+{% endblock javascripts %}
+

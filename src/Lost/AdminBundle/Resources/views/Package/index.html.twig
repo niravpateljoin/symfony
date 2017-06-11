@@ -1,0 +1,54 @@
+{% extends "LostAdminBundle::layout.html.twig" %}
+
+{% block body %}
+
+    <div class="container min_cont_hight">
+        <div class="row">
+            {% include "LostUserBundle::flashMessage.html.twig" %}
+            <table class="table table-bordered table-hover">
+                <tr>
+                <td colspan="9">
+                    <form method="get" id="searchService" action="{{ path('lost_admin_package_list') }}">
+                    <h4>Package</h4>
+                    <div class="col-md-4">
+                    <input type="text" name="name" placeholder="Package Name" value="{{ (app.request.get('name')) ? app.request.get('name') : ''}}" class="form-control"></div>
+                    <input type="submit" name='search'value="Search" class="btn btn-default"/>&nbsp;&nbsp;<a href="{{ path(app.request.attributes.get('_route')) }}" class="btn btn-info">Clear</a>
+                    </form>
+                </td>
+            </tr>
+                <tr>
+                    <th width="10%">{{ knp_pagination_sortable(pagination, 'Package Id', 'p.packageId') }}</th>
+                    <th{% if pagination.isSorted('name') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Name', 'p.name') }}</th>
+                    <th{% if pagination.isSorted('price') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Price', 'p.price') }}</th>
+                    <th{% if pagination.isSorted('status') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Status', 'p.status') }}</th>
+                    {% if admin_permission.checkPermission('country_service_delete') %}
+                        <th colspan="2" align="center" width="15%">Action</th>
+                    {% endif %}
+                </tr>
+
+                {% if (pagination|length > 0) %}
+                    {% for record in pagination %}
+                        <tr {% if loop.index is odd %}class="color"{% endif %}>
+                            <td>{{ record.packageId }}</td>
+                            <td><a href="{{ path('lost_admin_package_edit', {'id': record.id})}}">{{ record.name }}</a></td>
+                            <td>{{ record.price }}</td>
+                            <td>{{ (record.status)?'Active':'Inactive' }}</td>
+                            {% if admin_permission.checkPermission('country_service_delete') %}
+                                <td>
+                                	<a href="{{ path('lost_admin_package_edit', {'id': record.id})}}">Edit</a>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="10" align="center">No records found.</td></tr>
+                {% endif %}
+            </table>
+
+            <div class="navigation">
+                {{ knp_pagination_render(pagination) }}
+            </div>
+        </div>
+    </div>
+
+{% endblock body %}

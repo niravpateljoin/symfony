@@ -1,0 +1,28 @@
+parameters:
+#    lost_service.example.class: Lost\ServiceBundle\Example
+
+services:
+#    lost_service.example:
+#        class: %lost_service.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
+
+    selevisionService:
+        class: Lost\ServiceBundle\Controller\SelevisionController
+        arguments: 
+            container: "@service_container"
+            
+    packageActivation:
+        class: Lost\ServiceBundle\Controller\PackageActivationController
+        arguments: 
+            container: "@service_container"
+
+    milstar:
+        class: Lost\ServiceBundle\Controller\MilstarController
+        arguments: 
+            container: "@service_container"
+
+    paymentProcess:
+        class: Lost\ServiceBundle\Controller\PaymentProcessController
+        arguments: 
+           container: "@service_container"            
+         

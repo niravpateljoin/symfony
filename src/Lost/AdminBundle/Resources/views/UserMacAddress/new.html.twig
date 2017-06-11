@@ -1,0 +1,26 @@
+<div class="line_make_address_box">	
+    <form action="javascript:void(0);" {{ form_enctype(form) }} method="POST" class="form-horizontal" id="addMacAddress" novalidate>
+        <div class="form-group col-sm-9">
+            <div class="row"> 
+                <!--label class="control-label">Username: </label-->
+                <div>
+                {{ form_widget(form.macAddress, { 'attr': {'data-prompt-position': 'topRight', 'placeholder': 'User Mac Address', 'class' : 'form-control'}}) }}
+                </div>
+                <div class="serverError">
+
+                    {% if form_errors(form.macAddress) %}
+                        {{ form_errors(form.macAddress) }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+            {{ form_rest(form) }}
+
+        <div class="col-sm-3 add-btn-bx">
+            <div class="row">  
+                <input type="submit" name="submit" id="submitAddMacAddress" value="Save" class="submitBtn btn btn-success">
+            </div>
+
+        </div>   
+    </form>
+</div>

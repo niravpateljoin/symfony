@@ -1,0 +1,65 @@
+{% extends "LostUserBundle::layout.html.twig" %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+{% block body %}
+    {% block fos_user_content %}
+        <div class="loginBg">
+            <div class="login">
+                <div class="loginForm">
+                    <h1>Sign in</h1>
+                    {% include "LostUserBundle::flashMessage.html.twig" %}
+                    <ul>
+                        <form action="{{ path("fos_user_security_check") }}" id="login_form" method="post" novalidate>
+                            
+                             {% if error %}
+                                <div class="alert alert-danger">
+                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                       <p>
+                                            {{ error.messageKey|trans(error.messageData, 'security') }}
+                                       </p>
+                                </div>           
+                            {% endif %}
+        
+                           
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+                            <li><input type="text" id="username" name="_username" value="{{ last_username }}" required="required" placeholder="Username"/></li>
+                            <li><input type="password" id="password" name="_password" required="required" placeholder="Password"/></li>
+                            <li><input type="checkbox" id="remember_me" name="_remember_me" value="on" /> <label for="remember">Remember me on this computer</label></li>
+                            <li class="submit"><input type="submit" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans }}" class="submitBtn"/></li>                        
+                        </form>
+                        <li><a href="{{ path('fos_user_resetting_request') }}">Forgot password ?</a> <a href="{{ path('fos_user_registration_register') }}" class="pull-right">Create an account</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    {% endblock fos_user_content %}
+{% endblock body %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+                        
+            $('#login_form').validate({
+                rules: {
+                    "_username": {
+                        "required": true,
+                    },
+                    "_password": {
+                        "required": true,
+                    }
+                },
+                messages: {
+                    "_username": {
+                        "required": "Please enter username.",
+                    },
+                    "_password": {
+                        "required": "Please enter password.",
+                    }
+                }
+            });
+        });
+    </script>
+
+{% endblock javascripts %}

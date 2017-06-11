@@ -1,0 +1,901 @@
+{% extends "LostUserBundle::layout.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock stylesheets %}
+
+{% block body %}
+{% block fos_user_content %}
+{% trans_default_domain 'FOSUserBundle' %}
+<div class="innerBg">	
+    <div class="container min_cont_hight">
+        {% set noOfItems = 0 %}        
+        <div class="row">
+        	<div class="col-xs-12">
+                {% include "LostUserBundle::flashMessage.html.twig" %}
+                <div id="cartmsg"></div>
+                <div class="heading">
+                    <h3>Order Summary</h3>
+                </div>
+                <div class="panel-group" id="summary-accordion">
+			        <div class="panel panel-default">
+			            <div class="panel-heading">
+			                <h4 class="panel-title">
+			                    <a data-toggle="collapse" data-parent="#summary-accordion" href="#collapseSummary" id="collapseSummaryPannelTitle">Summary</a>
+			                </h4>
+			            </div>
+			            <div id="collapseSummary" class="panel-collapse collapse in">
+			                <div class="panel-body">
+			                	{{ form_start(form, {'method': 'POST', 'action': '', 'attr': {'id': 'frmSummary', 'onsubmit':'return proccedActivation()'}  }) }}
+			                	<input type="hidden" name="isStepOneCompleted" id="isStepOneCompleted" value="0" />
+			                	{% set freeService = 1 %}
+			                	{% set paybleAmount = 0 %}
+			                	<table class="table table-bordered">
+			                    
+			                    	{% if summaryData.CartAvailable == 1 %}
+			                    		
+			                    		{% set totalIPTVAmount = 0 %}
+			                    		{% set totalAddOnAmount = 0 %}
+			                    		{% set totalISPAmount = 0 %}
+			                    		{% set totalCreditAmount = 0 %}
+			                    		
+			                    		{% set cartData = summaryData.Cart %}
+			                    		
+			                    		{% if summaryData.IsIPTVAvailabledInCart == 1 %}
+			                    			{% set iptvPackages = cartData.IPTV.RegularPack %}
+  				                    			<tr>
+							                        <th rowspan="{{ iptvPackages|length + 1 }}" style="color:#6c509a">IPTV Packages</th>
+							                        <th>Package</th>
+							                        <th>Price</th>
+							                    </tr>
+							                    
+			                    			{% for iptvPackage in iptvPackages %}
+			                    			
+			                    				{% set discountedAmount = 0 %}
+			                    				
+				                    			<tr id="row_{{ iptvPackage.servicePurchaseId }}">
+									            	<td>{{ iptvPackage.packageName }}</td>
+									                <td>${{ iptvPackage.amount }}</td>
+									                {% set totalIPTVAmount = totalIPTVAmount + iptvPackage.amount %}
+												</tr>
+												
+												{% if cartData.IPTV.unusedCredit > 0 %}
+													<tr>
+										            	<td align="right" colspan="2"><i>Existing IPTV Pack Unused credit</i></td>
+										                <td>-${{ cartData.IPTV.unusedCredit }}</td>									                
+													</tr>
+													{% set totalIPTVAmount = totalIPTVAmount - cartData.IPTV.unusedCredit %}
+												{% endif %}
+												
+												{% if iptvPackage.discountPercentage > 0 %}
+													{% set discountedAmount = (iptvPackage.amount * iptvPackage.discountPercentage) / 100 %}
+													<tr>
+				                    					<td align="right" colspan="2"><i>{{ iptvPackage.discountPercentage }}% Bundle discount on TV Package</i></td>
+				                    					<td>-${{ discountedAmount|number_format(2) }}</td>
+				                    				</tr>									
+			                    					{% set totalIPTVAmount = totalIPTVAmount - discountedAmount %}
+			                    				{% endif %}			                    							                    				
+			                    							
+			                    			{% endfor %}
+			                    				<tr>
+			                    					<td align="right" colspan="2"><b>Sub Total</b></td>
+			                    					<td><b>${{ totalIPTVAmount|number_format(2) }}</b></td>
+			                    				</tr>
+			                    					                    						                    						                    			
+			                    		{% endif %}
+			                    		
+			                    		{% if summaryData.IsAddOnAvailabledInCart == 1 %}
+			                    		
+			                    			{% set addOnPackages = cartData.IPTV.AddOnPack %}
+					                    		<tr>
+							                        <th rowspan="{{ addOnPackages|length + 1 }}" style="color:#6c509a">Premium Packages</th>
+							                        <th>Package</th>
+							                        <th>Price</th>
+							                    </tr>
+							                    
+			                    			{% for addOnPackage in addOnPackages %}
+				                    			<tr id="row_{{ addOnPackage.servicePurchaseId }}">
+									            	<td>{{ addOnPackage.packageName }}</td>
+									                <td>${{ addOnPackage.payableAmount }}</td>									                
+												</tr>
+												{% set totalAddOnAmount = totalAddOnAmount + addOnPackage.payableAmount %}												
+			                    			{% endfor%}
+			                    				<tr>
+			                    					<td align="right" colspan="2"><b>Sub Total</b></td>
+			                    					<td><b>${{ totalAddOnAmount|number_format(2) }}</b></td>
+			                    				</tr>
+			                    			
+			                    		{% endif %}
+			                    		
+			                    		{% if summaryData.IsISPAvailabledInCart == 1 %}
+			                    			{% set ispPackages = cartData.ISP.RegularPack %}
+			                    				<tr>
+							                        <th rowspan="{{ ispPackages|length + 1 }}" style="color:#6c509a">ISP Packages</th>
+							                        <th>Package</th>
+							                        <th>Price</th>
+							                    </tr>
+							                
+			                    			{% for ispPackage in ispPackages %}
+				                    			<tr id="row_{{ ispPackage.servicePurchaseId }}">
+									            	<td>{{ ispPackage.packageName }}</td>
+									                <td>${{ ispPackage.amount }}</td>									                
+												</tr>			
+												{% set totalISPAmount = totalISPAmount + ispPackage.amount %}
+												
+												{% if cartData.ISP.unusedCredit > 0 %}
+													<tr>
+										            	<td align="right" colspan="2"><i>Existing ISP Pack Unused credit</i></td>
+										                <td>-${{ cartData.ISP.unusedCredit }}</td>									                
+													</tr>
+													{% set totalISPAmount = totalISPAmount - cartData.ISP.unusedCredit %}
+												{% endif %}
+																					
+			                    			{% endfor%}
+			                    			
+			                    					<td align="right" colspan="2"><b>Sub Total</b></td>
+			                    					<td><b>${{ totalISPAmount|number_format(2) }}</b></td>
+			                    				</tr>
+			                    			</tbody>
+			                    		{% endif %}
+			                    		
+			                    		{% if summaryData.IsCreditAvailabledInCart == 1 %}
+			                    				
+					                    		<tr>
+							                        <th rowspan="2" style="color:#6c509a">Credit Purchase</th>
+							                        <th>Description</th>
+							                        <th>Price</th>
+							                    </tr>
+							                    
+						                    	{% set purchaseCredits = cartData.Credit %}
+						                    	{% for credit in purchaseCredits %}
+				                    			<tr>
+									            	<td>Pay ${{ credit.amount }} and get ${{ credit.credit }} credit in your account.</td>
+									                <td>${{ credit.amount }}</td>
+												</tr>
+												{% set totalCreditAmount = totalCreditAmount + credit.amount %}
+												
+												{% endfor %}
+												<tr>
+													<td align="right" colspan="2"><b>Sub Total</b></td>
+			                    					<td><b>${{ totalCreditAmount|number_format(2) }}</b></td>
+												</tr>
+											</tbody>
+										{% endif %}
+			                    		
+			                    		{% set groundTotal = totalIPTVAmount + totalAddOnAmount + totalISPAmount + totalCreditAmount %}
+			                    		{% set paybleAmount = groundTotal %}
+			                    		<tr>
+											<td align="right" colspan="2"><b>Total Amount</b></td>
+			                    			<td><b>${{ groundTotal|number_format(2) }}</b></td>
+			                    		</tr>
+			                    		
+			                    		<tr>
+											<td align="right" colspan="2"><b>Payble Amount</b></td>
+			                    			<td><b>${{ paybleAmount|number_format(2) }}</b></td>
+			                    		</tr>
+			                    		
+			                    		<tr>
+											<td colspan="3">
+												<div style="font-size: 18px" class="pull-left">
+													<a href="{{url('lost_user_account')}}" class="btn btn-lg btn-default margBot20 margTop20" id="continue">Continue Shopping</a>													
+												</div>
+												<div style="font-size: 18px" class="pull-right">
+													{% if paybleAmount > 0 %}
+														<input type="button" name="submit" value="Next" class="btn btn-lg btn-default margBot20 margTop20" onclick="confirmOrderSummary('frmSummary','{{ isISPAddedForIPTV }}');" id='proceedcheck'/>
+													{% else %}
+														<input type="submit" name="submit" value="Proceed" class="btn btn-lg btn-default margBot20 margTop20"/>
+													{% endif %}
+												</div>
+											</td>			                    			
+			                    		</tr>
+			                    		
+			                    		<input type="hidden" name="paybleAmount" value="{{ paybleAmount }}" />	        
+			                    	{% else %}
+			                    		<tr>
+											<td colspan="2" align="center">Your cart is empty</td>							
+										</tr>	
+										<tr>
+											<td colspan="2">
+												<div style="font-size: 18px" class="pull-left">
+													<a href="{{url('lost_user_account')}}" class="btn btn-lg btn-default margBot20 margTop20" id="continue">Continue Shopping</a>																		
+												</div>								
+											</td>
+										</tr>            		
+			                    	{% endif%}			                    			                    	
+					            </table>
+					            {{ form_end(form) }}
+			                </div>
+			            </div>
+			        </div>
+			        
+			        {% if paybleAmount > 0 and (summaryData.IsIPTVAvailabledInCart == 1 or summaryData.IsISPAvailabledInCart == 1 or summaryData.IsAddOnAvailabledInCart == 1 or summaryData.IsCreditAvailabledInCart == 1) %}
+			        <div class="panel panel-default">
+			            <div class="panel-heading">
+			                <h4 class="panel-title">
+			                    <a data-toggle="collapse" data-parent="#summary-accordion" href="#collapsePaymentOptions" id="collapsePaymentOptionsPannelTitle">Payment Options</a>
+			                </h4>
+			            </div>
+			            <div id="collapsePaymentOptions" class="panel-collapse collapse">
+			                <div class="panel-body">
+			                			                
+			                	{{ form_start(form, {'method': 'POST', 'action': '', 'attr': {'id': 'frmPaymentOptions'}  }) }}
+			                	<input type="hidden" name="processStep" id="paymentOptions" class="form-control" value="paymentOptions">
+			                	<input type="hidden" name="isStepThreeCompleted" id="isStepThreeCompleted" value="0" />
+			                	<div class="col-xs-12">
+			                		<div class="row">
+				                		<div class="col-md-3">				                		
+				                			<div class="col-md-12">
+						                		<input type="radio" name="paymentBy" value="cc" onclick="showCardinfoBox(this.value)"/>
+						                		<label>Credit Card</label>
+						                		<br/>
+						                		<img src="{{ asset('bundles/Lostuser/images/cc-logo.jpg') }}" style="height:50px;"/>
+					                		</div>
+					                		
+					                		<div class="col-xs-12">
+						                		<input type="radio" name="paymentBy" value="paypal" onclick="showCardinfoBox(this.value)"/>
+						                		<label>Paypal</label>
+						                		<br/>
+						                		<img src="{{ asset('bundles/Lostuser/images/paypal-logo.jpg') }}" style="height:50px;"/>
+						                	</div>
+                                            
+											{% if userServiceLocation|length > 0 and userServiceLocation['IsMilstarEnabled'] == '1' %}
+						                	<div class="col-xs-12">
+						                		<input type="radio" name="paymentBy" value="milstar" onclick="showCardinfoBox(this.value)"/>
+						                		<label>Milstar</label>						                		
+						                	</div>
+                                            {% endif %} 
+                                            
+				                		</div>
+				                		
+				                		<div class="col-md-9" id="cardinfo" style="display:none;">
+					                		
+			                                <div class="panel panel-primary">
+			                                    <div class="panel-heading">
+			                                        <h4 class="panel-title">Credit Card Detail</h4>
+			                                    </div>
+			                                    <div class="panel-body row">
+			                                    	<div class="form-group col-sm-6 col-md-6 cc-bx">
+		                                                <label class="col-sm-4 control-label">First Name</label>
+		                                                <div class="col-sm-8">
+		                                                	<input type="text" name="Billing[Firstname]" id="Firstname" class="form-control" placeholder="First Name" value="Mahesh">
+															<label id="Firstname-error" class="error" for="Firstname"></label>		                                                	                                                   
+		                                                </div>
+		                                            </div>
+		                                            
+		                                            <div class="form-group col-sm-6 col-md-6 cc-bx">
+		                                                <label class="col-sm-4 control-label">Last Name</label>
+		                                                <div class="col-sm-8">
+	                                                		<input type="text" name="Billing[Lastname]" id="Lastname" class="form-control" placeholder="Last Name" value="Nironi">
+															<label id="Lastname-error" class="error" for="Lastname"></label>		                                                    
+		                                                </div>
+		                                            </div>
+			                                    
+			                                        <div class="form-group col-sm-6 col-md-6 cc-bx">
+		                                                <label class="col-sm-4 control-label">Card Type</label>
+		                                                <div class="col-sm-8">
+		                                                	<select name="cc[CardType]" data-placeholder="Choose One" class="form-control" id="CardType">
+					                                            <option value="">Choose One</option>
+					                                            <option value="Visa" selected="selected">Visa</option>
+					                                            <option value="MasterCard">MasterCard</option>
+					                                            <option value="Discover">Discover</option>
+					                                            <option value="Amex">Amex</option>
+					                                        </select>	 
+					                                        <label id="CardType-error" class="error" for="CardType"></label>                                                   
+		                                                </div>
+		                                            </div>
+		                                            
+		                                            <div class="form-group col-sm-6 col-md-6 cc-bx">
+		                                                <label class="col-sm-4 control-label">Card Number</label>
+		                                                <div class="col-sm-8">
+		                                                    <input type="text" name="cc[CardNumber]" id="CardNumber" class="form-control" placeholder="Card Number" maxlength="16" value="4032034218396748">
+		                                                    <label id="CardNumber-error" class="error" for="CardNumber"></label>
+		                                                </div>
+		                                            </div>
+		                                            
+		                                            <div class="form-group col-sm-6 col-md-6 cc-bx">
+		                                                <label class="col-sm-4 control-label">Expiry Date</label>
+		                                                <div class="col-sm-4">
+		                                                	<select name="cc[ExpMonth]" data-placeholder="Choose One" class="form-control" id="ExpMonth">
+					                                            <option value="">Month</option>
+					                                            {% for month in expiresMonth %}
+					                                            <option value="{{ month }}">{{ month }}</option>
+					                                            {% endfor %}					                                            				                                            
+					                                        </select>	   
+					                                        <label id="ExpMonth-error" class="error" for="ExpMonth"></label>                                                 
+		                                                </div>
+		                                                <div class="col-sm-4">
+		                                                	<select name="cc[ExpYear]" data-placeholder="Choose One" class="form-control" id="ExpYear">
+					                                            <option value="">Year</option>
+					                                            {% for year in expiresYear %}
+					                                            <option value="{{ year }}">{{ year }}</option>
+					                                            {% endfor %}					                                            				                                            
+					                                        </select>	    
+					                                        <label id="ExpYear-error" class="error" for="ExpYear"></label>                                                
+		                                                </div>		                                                
+		                                            </div>
+		                                            
+		                                            <div class="form-group col-sm-6 col-md-6 cc-bx">
+		                                                <label class="col-sm-4 control-label">CVV</label>
+		                                                <div class="col-sm-8">
+		                                                    <input type="password" name="cc[Cvv]" id="Cvv" class="form-control" placeholder="CVV" value="123">
+		                                                    <label id="Cvv-error" class="error" for="Cvv"></label>
+		                                                </div>
+		                                            </div>
+			                                    </div><!-- panel-body -->
+			                                </div>	
+			                                
+			                                <div class="panel panel-primary">
+			                                    <div class="panel-heading">
+			                                        <h4 class="panel-title">Billing Address</h4>
+			                                    </div>
+			                                    <div class="panel-body row">
+			                                        
+		                                            
+		                                            <div class="form-group col-sm-6 col-md-6 cc-bx">
+		                                                <label class="col-sm-4 control-label">Address</label>
+		                                                <div class="col-sm-8">
+	                                                		<input type="text" name="Billing[Address]" id="Address" class="form-control" placeholder="Address" value="Brainvire">
+															<label id="Address-error" class="error" for="Address"></label>		                                                	                                                 
+		                                                </div>		                                                		                                                
+		                                            </div>
+		                                            
+		                                            <div class="form-group col-sm-6 col-md-6 cc-bx">
+		                                                <label class="col-sm-4 control-label">City</label>
+		                                                <div class="col-sm-8">
+		                                                	<input type="text" name="Billing[City]" id="City" class="form-control" placeholder="City" value="Ahmedabad">
+															<label id="City-error" class="error" for="City"></label>		                                                    
+		                                                </div>
+		                                            </div>
+		                                            
+		                                            <div class="form-group col-sm-6 col-md-6 cc-bx">
+		                                                <label class="col-sm-4 control-label">State</label>
+		                                                <div class="col-sm-8">
+		                                                	<input type="text" name="Billing[State]" id="State" class="form-control" placeholder="State" value="Gujarat">
+															<label id="State-error" class="error" for="State"></label>		                                                    
+		                                                </div>
+		                                            </div>
+		                                            
+		                                            <div class="form-group col-sm-6 col-md-6 cc-bx">
+		                                                <label class="col-sm-4 control-label">Zip Code</label>
+		                                                <div class="col-sm-8">
+		                                                	<input type="text" name="Billing[Zipcode]" id="Zipcode" class="form-control" placeholder="Zip Code" value="382350">
+															<label id="Zipcode-error" class="error" for="Zipcode"></label>		                                                    
+		                                                </div>
+		                                            </div>
+		                                            
+		                                            <div class="form-group col-sm-6 col-md-6 cc-bx">
+		                                                <label class="col-sm-4 control-label">Country</label>
+		                                                <div class="col-sm-8">
+		                                                	<select name="Billing[Country]" data-placeholder="Choose One" class="form-control" id="Country">
+																<option value="">Choose One</option>
+																{% if country %}
+																	{% for key,val in country %}
+							                                    	<option value="{{ key }}" {{ (key == 'US')?'selected="selected"':'' }}>{{ val }}</option>
+							                                    	{% endfor %}
+							                                    {% endif %}																
+															</select>
+															<label id="Country" class="error" for="Country"></label>		                                                    
+		                                                </div>
+		                                            </div>
+		                                            
+			                                    </div><!-- panel-body -->
+			                                </div>
+			                                		                                			                                           
+										</div>
+										
+										<div class="col-md-9" id="milstarinfo" style="display:none;">
+					                		
+			                                <div class="panel panel-primary">
+			                                    <div class="panel-heading">
+			                                        <h4 class="panel-title">Milstar Detail</h4>
+			                                    </div>
+			                                    <div class="panel-body row">
+			                                        <div class="form-group col-sm-6 col-md-6 cc-bx">
+		                                                <label class="col-sm-4 control-label">Card Number</label>
+		                                                <div class="col-sm-8">
+		                                                    <input type="text" name="milstar[MCardNumber]" id="MCardNumber" class="form-control" placeholder="Card Number" maxlength="16" value="6019444000728606">
+		                                                    <label id="MCardNumber-error" class="error" for="MCardNumber"></label>
+		                                                </div>
+		                                            </div>
+		                                            <div class="form-group col-sm-6 col-md-6 cc-bx">
+		                                                <label class="col-sm-4 control-label">Zipcode</label>
+		                                                <div class="col-sm-8">
+		                                                    <input type="text" name="milstar[MZipcode]" id="MZipcode" class="form-control" placeholder="Zip Code" value="77024">
+		                                                    <label id="MZipcode-error" class="error" for="MZipcode"></label>
+		                                                </div>
+		                                            </div>
+			                                    </div><!-- panel-body -->
+			                                </div>			                                			                                           
+										</div>
+										
+									</div>
+			                	</div>
+			                	
+			                	<div class="col-sm-12 text-right margTop20">	                                                
+									<input type="button" name="submit" value="Payment" class="btn btn-lg btn-default" onclick="confirmOrderSummary('frmPaymentOptions','');">	                                                
+								</div>
+								
+								 
+								{{ form_end(form) }}
+			                </div>
+			            </div>
+			        </div>
+			        
+			        {% endif %}
+			    </div>
+			    
+            </div>	        
+        </div>        
+    </div>    
+</div>
+<script type="text/javascript">
+        noOfItems = '{{noOfItems}}';
+</script>
+<div id="ajax-loader-bx" style="display:none;">
+	<img id="loading" src="{{ asset('bundles/Lostuser/images/ajax_loader1.gif') }}"><br/>
+	<div id="loader-text">Please wait....</div>
+</div>
+{% endblock fos_user_content %}
+{% endblock body %}
+{% block javascripts %}
+{{ parent() }}
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+	
+	$('#frmBillingAddress').validate({
+        rules: {
+            "Billing[Firstname]": {
+                "required": true                    
+            },
+            "Billing[Lastname]": {
+                "required": true
+            },
+            "Billing[Address]": {
+                "required": true,
+            },
+            "Billing[City]": {
+                "required": true,
+            },
+            "Billing[State]": {
+                "required": true
+            },
+            "Billing[Zipcode]": {
+                "required": true
+            },
+            "Billing[Country]": {
+                "required": true
+            }       
+        },
+        messages: {
+        	"Billing[Firstname]": {
+            	"required": "Please enter first name.",                    
+            },
+            "Billing[Lastname]": {
+            	"required": "Please enter last name.",
+            },
+            "Billing[Address]": {
+            	"required": "Please enter address.",
+            },
+            "Billing[City]": {
+            	"required": "Please enter city.",
+            },
+            "Billing[State]": {
+            	"required": "Please enter state.",
+            },
+            "Billing[Zipcode]": {
+            	"required": "Please enter zip code.",
+            },
+            "Billing[Country]": {
+            	"required": "Please select country.",
+            }
+        }
+    });
+
+	
+	$('#frmPaymentOptions').validate({
+        rules: {
+            "paymentBy": {
+                "required": true
+            }        
+        },
+        messages: {
+        	"paymentBy": {
+            	"required": "Please select any one payment option.",
+            }
+        }        
+    });
+        
+});
+
+function confirmOrderSummary(formName,isISPAddedForIPTV) {
+	
+    var checkDetailUrl = '{{ path('lost_payment_process_confirm_detail', {'step' : 'stepNumber'}) }}';
+		
+    if(formName == 'frmSummary'){
+		
+		if(isISPAddedForIPTV == false){
+			
+			$.confirm({
+				title: 'Alert!',
+				content: 'You have only added ISP service. Do you want to add IPTV service for discount bundle rate?',
+				icon: '',
+			    confirmButton: 'Yes',
+		        cancelButton: 'No',
+		        confirmButtonClass: 'btn-info',
+		        cancelButtonClass: 'btn-danger',
+			    theme: 'white',
+		        animation: 'scale',
+		        animationSpeed: 400,
+		        animationBounce: 1.5,
+		        keyboardEnabled: false,
+		        container: 'body',
+			    cancel: function(){
+			    	
+			    	processCheckoutDetail(formName,checkDetailUrl);
+			    },
+			    confirm: function(){
+			    	window.location.href = '{{ path('lost_service_plan', {'service': 'IPTV' }) }}';
+			    },
+			    backgroundDismiss: false,
+		        autoClose: false,
+		        closeIcon: true
+			});
+            
+		}else{
+			
+			processCheckoutDetail(formName,checkDetailUrl);
+		}		
+	}
+	
+	if(formName == 'frmBillingAddress'){
+		
+		if($('#'+formName).valid()){
+			
+            processCheckoutDetail(formName,checkDetailUrl);
+			
+		}
+	}
+	
+	if(formName == 'frmPaymentOptions'){
+		
+		isValidate = validatePaymentMethodForm(formName);
+        
+        if(isValidate){
+			
+			if($('#'+formName).valid()){
+                
+                processCheckoutDetail(formName,checkDetailUrl);                
+			}			
+		}
+	}			
+}
+
+
+function processCheckoutDetail(name,ajaxUrl){
+	
+    if(name == 'frmSummary') {
+        
+     	ajaxUrl = ajaxUrl.replace('stepNumber', 1);     
+     	var postData = $('#'+name).serializeArray();       
+    }
+    
+    if(name == 'frmBillingAddress') {
+        
+        ajaxUrl = ajaxUrl.replace('stepNumber', 2);
+        var postData = $('#'+name+',#frmSummary').serializeArray();       
+    }
+    
+    if(name == 'frmPaymentOptions') {
+        
+        ajaxUrl = ajaxUrl.replace('stepNumber', 3);
+        var postData = $('#'+name+',#frmSummary').serializeArray();        
+    }
+        
+	$.ajax({
+		
+		type: "POST",
+		url: ajaxUrl,
+		data: postData,	
+		beforeSend: function( xhr ) {
+			
+		    $('#ajax-loader-bx').show();
+		},
+		success:function(result){
+			
+			var obj = jQuery.parseJSON( result );
+			
+			var isGlobalError = false;
+			
+			if(obj['requestStep'] == 1 && obj['stepOneResponse'] != ''){
+				
+				processStepOne(obj['stepOneResponse']);
+				$('#ajax-loader-bx').hide();
+			}else if(obj['requestStep'] == 2 && obj['stepTwoResponse'] != ''){
+				
+				processStepTwo(obj['stepTwoResponse']);
+				$('#ajax-loader-bx').hide();
+			}else if(obj['requestStep'] == 3 && obj['stepThreeResponse'] != ''){
+				
+				processStepThree(obj['stepThreeResponse']);		
+				
+			}else{
+				
+				if(obj['status'] == 'failed'){
+					
+					var errorMsg = obj['message'];
+				}else{
+					var errorMsg = 'Something went wrong in ajax request.';
+				}
+				
+				$('#cartmsg').html(disErrorMsg('warning',errorMsg));
+				$('#ajax-loader-bx').hide();
+			}		
+			
+			
+		}
+	});		        	
+}
+
+function processStepOne(obj){
+	var isStepOneSuccess = false; 
+	
+	if(obj['status'] == 'success'){
+				
+		isStepOneSuccess = true;							
+	}else if(obj['status'] == 'error'){
+				
+		displayServerErrorMsg(obj['errorMessages']); //Show error message
+	}else if(obj['status'] == 'failed'){
+		
+		$('#cartmsg').html(disErrorMsg('warning',obj['message']));		
+	}else{
+				
+		$('#cartmsg').html(disErrorMsg('warning','Something went wrong in ajax request.'));		
+	}			
+	
+	if(isStepOneSuccess == false){
+		
+		collapseOpenTab('collapseSummary');
+	}else{
+		collapseOpenTab('collapsePaymentOptions');
+	}		
+}
+
+function processStepTwo(obj){
+	var isStepTwoSuccess = false; 
+	
+	if(obj['status'] == 'success'){
+				
+		isStepTwoSuccess = true;							
+	}else if(obj['status'] == 'error'){
+				
+		displayServerErrorMsg(obj['errorMessages']); //Show error message
+	}else if(obj['status'] == 'failed'){
+		
+		$('#cartmsg').html(disErrorMsg('warning',obj['message']));		
+	}else{
+				
+		$('#cartmsg').html(disErrorMsg('warning','Something went wrong in ajax request.'));		
+	}			
+	
+	if(isStepTwoSuccess == false){
+		
+		collapseOpenTab('collapsebillingAddress');
+	}else{
+		collapseOpenTab('collapsePaymentOptions');
+	}		
+}
+
+function processStepThree(obj){
+	
+	var isStepThreeSuccess = false; 
+	
+	if(obj['status'] == 'success'){			
+		
+		isStepThreeSuccess = true;							
+	}else if(obj['status'] == 'error'){
+				
+		displayServerErrorMsg(obj['errorMessages']); //Show error message
+	}else if(obj['status'] == 'failed'){
+		
+		$('#cartmsg').html(disErrorMsg('warning',obj['message']));		
+	}else{
+				
+		$('#cartmsg').html(disErrorMsg('warning','Something went wrong in ajax request.'));		
+	}			
+	
+	if(isStepThreeSuccess == false){
+		
+		collapseOpenTab('collapsePaymentOptions');
+		$('#ajax-loader-bx').hide();
+	}else{
+		
+		if(obj['status'] == 'success' && obj['paymentBy'] != ''){
+			
+			$('#ajax-loader-bx').show();
+			window.location.href = '{{ path('lost_do_payment_process') }}';		    
+		}else{
+			
+			$('#ajax-loader-bx').hide();
+		} 		
+		collapseOpenTab('collapsePaymentOptions');
+	}
+	
+}
+
+
+function collapseOpenTab(tabId){
+	
+	//$('.panel-collapse.in').collapse('hide');
+	if(!$( "#"+tabId ).hasClass( "in" )){
+		
+		$( "#"+tabId+"PannelTitle" ).trigger( "click" );
+	}
+	
+	//$('.panel-collapse.in').collapse('hide');
+	//$("#"+tabId).addClass('in');
+	//$("#"+tabId).collapse('show');
+}
+
+function displayServerErrorMsg(errorMessages){
+	
+	if(errorMessages != ''){
+		
+		for (var key in errorMessages) {
+			
+			$("#"+key+"-error").html(errorMessages[key]).show();			
+		}
+	}
+}
+
+function validatePaymentMethodForm(formName){
+	
+	var paymentType = $('input[name=paymentBy]:checked', '#frmPaymentOptions').val();
+	
+	if(paymentType == 'cc'){
+					
+        $('#CardType').rules('add', {
+            required: true,
+            messages: {
+                required:  "Please select card type.",                    
+            }
+        });
+        
+        $('#CardNumber').rules('add', {
+            required: true,
+            messages: {
+                required:  "Please enter card number.",                    
+            }
+        });
+        
+        $('#ExpMonth').rules('add', {
+            required: true,
+            messages: {
+                required:  "Please select month.",                    
+            }
+        });
+        
+        $('#ExpYear').rules('add', {
+            required: true,
+            messages: {
+                required:  "Please select year.",                    
+            }
+        });
+        
+        $('#Cvv').rules('add', {
+            required: true,
+            messages: {
+                required:  "Please enter cvv.",                    
+            }
+        });
+        
+        $('#Firstname').rules('add', {
+            required: true,
+            messages: {
+                required:  "Please enter first name.",                    
+            }
+        });
+        $('#Lastname').rules('add', {
+            required: true,
+            messages: {
+                required:  "Please enter last name.",                    
+            }
+        });
+        $('#Address').rules('add', {
+            required: true,
+            messages: {
+                required:  "Please enter address.",                    
+            }
+        });
+        $('#City').rules('add', {
+            required: true,
+            messages: {
+                required:  "Please enter city.",                    
+            }
+        });
+        $('#State').rules('add', {
+            required: true,
+            messages: {
+                required:  "Please enter state.",                    
+            }
+        });
+        $('#Zipcode').rules('add', {
+            required: true,
+            messages: {
+                required:  "Please enter zip code.",                    
+            }
+        });
+        $('#Country').rules('add', {
+            required: true,
+            messages: {
+                required:  "Please select country.",                    
+            }
+        });
+        
+        return true;
+	}else if(paymentType == 'paypal'){
+		
+		return true;				
+	}else if(paymentType == 'milstar'){
+		
+		$('#MCardNumber').rules('add', {
+            required: true,
+            messages: {
+                required:  "Please enter milstar credit card number.",                    
+            }
+        });
+		
+		$('#MZipcode').rules('add', {
+            required: true,
+            messages: {
+                required:  "Please enter zipcode.",                    
+            }
+        });
+		
+		return true;
+        
+	}else{
+		
+		var err = disErrorMsg('warning','Please select valid payment options for payment.');
+		$('#cartmsg').html(err);
+		return false;
+	}
+}
+
+/* ensure any open panels are closed before showing selected */
+$('#summary-accordion').on('show.bs.collapse', function () {
+    $('#summary-accordion .in').collapse('hide');
+});
+
+
+function showCardinfoBox(val){
+	$('#ajax-loader-bx').show();
+	if(val == 'cc'){
+		
+		$('#milstarinfo').hide();
+		$('#cardinfo').show();
+		
+	}else if(val == 'milstar'){
+		
+		$('#milstarinfo').show();
+		$('#cardinfo').hide();
+	}else{
+		
+		$('#milstarinfo').hide();
+		$('#cardinfo').hide();
+	}		
+	$('#ajax-loader-bx').hide();
+}
+
+function proccedActivation(){
+	
+	$('#frmSummary').attr('action', '{{ path('lost_service_active_by_credit') }}');
+	
+	return true;
+}
+
+</script>
+
+{% endblock javascripts %}

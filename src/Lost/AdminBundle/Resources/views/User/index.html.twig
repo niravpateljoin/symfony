@@ -1,0 +1,310 @@
+{% extends "LostAdminBundle::layout.html.twig" %}
+
+{% block body %}
+
+            <div id="flash-message" class="msgBoxCont"></div>
+            {% include "LostUserBundle::flashMessage.html.twig" %}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1>
+        Search User
+    </h1>
+</section>
+<section class="content">
+    <form method="get" action="{{ path('lost_admin_user_list') }}">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="box box-success">	
+                    <div class="box-body">
+
+                        <div class="form-group col-md-4">
+                            <input type="text" name="search" placeholder="username or email..." value="{{ (app.request.get('search')) ? app.request.get('search') : ''}}" class="form-control">
+                        </div>
+
+                    </div>	
+                    <div class="box-footer">
+                        <div class="col-sm-6 add-btn-bx">		
+                            <input type="submit" value="Search" class="btn btn-success"/>&nbsp;&nbsp;
+                            <a href="{{ path(app.request.attributes.get('_route')) }}" class="btn btn-default">Clear</a>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="box box-success">	
+                    <div class="box-body">
+				{% if admin_permission.checkPermission('user_create') %}
+                        <a href="{{ path('lost_user_new') }}" class="btn btn-success pull-right margin-bottom10">Add new customer</a>
+				{% endif %}    
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                        {# sorting of properties based on query components #}
+                                    <th>{{ knp_pagination_sortable(pagination, 'Id', 'u.id') }}</th>
+                                    <th{% if pagination.isSorted('Name') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Name', 'u.firstname') }}</th>
+                                    <th{% if pagination.isSorted('username') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Username', 'u.username') }}</th>
+                                    <th{% if pagination.isSorted('email') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Email', 'u.email') }}</th>
+                                    <th>Active Services</th>
+                                    <th{% if pagination.isSorted('lastLogin') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Last Login', 'u.lastLogin') }}</th>
+                        {% if admin_permission.checkPermission('user_service_setting') %}<th>Service <br />Settings</th>{% endif %}
+                        {% if admin_permission.checkPermission('user_update') or admin_permission.checkPermission('user_log_detail') or admin_permission.checkPermission('user_purchase_detail') or admin_permission.checkPermission('user_delete') or admin_permission.checkPermission('view_user') %}
+                                    <th>Action</th>
+                        {% endif %}
+                                </tr>
+                            </thead>
+                    {% set isEditable = false %}
+                	{% if admin_permission.checkPermission('user_update') %}
+                	    {% set isEditable = true %}
+                	{% endif %}
+
+                    {# table body #}
+                    {% if (pagination|length > 0) %}
+                        {% for record in pagination %}
+
+                            <tr>
+                                <td>{{ record.id }}</td>
+                                <td>{{ record.firstname }} {{ record.lastname }} </td>
+                                <td>
+                                	{% if isEditable == true %}
+                                    <a href="{{ path('lost_admin_edit_customer', {'id': record.id})}}">{{ record.username }}</a></td>
+                					{% else %}
+                					{{ record.username }}
+                					{% endif %}
+                                </td>
+                                <td>{{ record.email }}</td>
+                                <td>
+                                    {% if(record.getActiveServices is not empty) %}
+                                        {% for activeService in record.getActiveServices %}
+                                            {{ activeService['name'] }}
+                                        {% endfor %}
+                                    {% else %}
+                                    N/A
+                                    {% endif %}
+                                </td>
+                                <td>{{ record.lastLogin | date('M-d-Y H:i:s') }}</td>
+
+                                {% if admin_permission.checkPermission('user_service_setting') %}
+                                <td>
+                                    {% if record.serviceSettings is not empty %}
+                                        {% for setting in record.serviceSettings %}
+                                            {% if setting.serviceStatus == 'Disabled' %}
+                                    <a href="{{ path('lost_admin_user_service_status', {'userId': record.id, 'serviceSettingId': setting.id})}}" onclick="return confirm('Are you sure want to reactivate service for user?')" title='{{ "Reactivate "~setting.service.name~" for user "~record.username }}'>
+                                                    {{ "Reactivate "~setting.service.name }}
+                                    </a>
+                                            {% else %}
+                                    <a href="{{ path('lost_admin_user_service_status', {'userId': record.id, 'serviceSettingId': setting.id})}}" onclick="return confirm('Are you sure want to deactivate service for user?')" title='{{ "Deactivate "~setting.service.name~" for user "~record.username }}'>
+                                                    {{ "Deactivate "~setting.service.name }}
+                                    </a>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </td>
+                                {% endif %}
+
+
+                                {% if isEditable == true or admin_permission.checkPermission('user_log_detail') or admin_permission.checkPermission('user_purchase_detail') or admin_permission.checkPermission('user_delete') or admin_permission.checkPermission('view_user') %}
+                                <td>
+
+                                    {% if isEditable == true %}
+                                    <a href="{{ path('lost_admin_edit_customer', {'id': record.id})}}">Edit</a>
+                                	{% endif %}
+
+                                    {% if admin_permission.checkPermission('user_log_detail') %}
+                                    &nbsp;|&nbsp;
+                                    <a href="{{ path('lost_admin_user_log', {'id': record.id})}}">Log Details</a>
+                                    {% endif %}
+
+                                    {% if admin_permission.checkPermission('user_purchase_detail') %}
+                                        {% if record.serviceSettings is not empty %}
+                                    &nbsp;|&nbsp;<a href="{{ path('lost_admin_user_service_details', {'userId': record.id})}}">Purchase Details</a>
+                                        {% endif %}
+                                    {% endif %}
+
+                                    {% if admin_permission.checkPermission('user_delete') %}
+                                    &nbsp;|&nbsp;<a href="{{ path('lost_admin_delete_customer', {'id': record.id})}}" onclick="return confirm('Are you sure want to delete?')">Delete</a>
+                                    {% endif %}
+
+                                    {% if admin_permission.checkPermission('view_user') %}
+	                                    {% if isEditable == true or admin_permission.checkPermission('user_log_detail') or admin_permission.checkPermission('user_purchase_detail') or admin_permission.checkPermission('user_delete') %}
+                                    &nbsp;|&nbsp;
+        	                            {% endif %}
+                                    <a href="{{ path('lost_admin_view_customer', {'id': record.id})}}">View</a>
+                                    {% endif %}  
+
+                                    &nbsp;|&nbsp;
+                                    <a href="javascript:void(0);" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#creditModal" data-whatever="@mdo" data-id="{{record.id}}" data-name="{{ record.firstname }} {{ record.lastname }}" title="Add Credit">Credit</a>
+
+                                </td>
+                                {% endif %}
+
+
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                            <tr><td colspan="9" align="center">No records found.</td></tr>
+                    {% endif %}
+                            </tbody>
+                        </table>
+                    </div></div></div></div>
+        <div class="row">
+            <div class="col-xs-12">
+				{# display navigation #}
+                <div class="navigation pull-right">
+                    {{ knp_pagination_render(pagination) }}
+                </div>  
+            </div>	
+        </div>
+    </form>
+</section>
+
+
+<!-- Modal -->
+<div class="modal fade" id="creditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="modelTitle">User Credit</h4>
+            </div>
+            <form id="user-credit">  
+
+                <div class="modal-body">
+                    <input type="hidden" id="user_id" name="user_id">
+                    <input type="hidden" id="credit_id" name="credit_id">
+
+                    <div class="form-group">
+                        <label for="recipient-name" class="control-label">Credit List:</label>
+
+                        <select id="select-credit" name="credit" class="form-control">
+                            <option value="">Select Credit</option>
+                            {% for record in credits %}
+                            <option value="{{record.amount}}" credit="{{record.id}}">{{record.amount}}</option>
+                            {% endfor %}
+
+                        </select>
+                        <label id="select-credit-error" class="error"></label>
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-success" id="submit" value="Pay Now">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+                </div>
+            </form>    
+        </div>
+    </div>
+</div>            
+{% endblock body %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+
+        $('#creditModal').on('show.bs.modal', function(event) {
+            
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var userName = button.data('name')
+            userName = userName.toLowerCase().replace(/\b[a-z]/g, function(letter) {
+                return letter.toUpperCase();
+            });
+
+            $("#select-credit").change(function() {
+
+                creditId = $('option:selected', this).attr("credit");
+                $("#credit_id").val(creditId);
+
+            });
+            
+            var userId = button.data('id') // Extract info from data-* attributes
+            $("#user_id").val(userId);
+
+            var modal = $(this)
+            modal.find('.modal-title').text('Add Credit To ' + userName + ' Account')
+
+        });
+
+    });
+
+
+    $("#user-credit").submit(function() {
+
+        if ($(this).valid()) {
+            
+            userId = $("#user_id").val();
+            creditId = $("#credit_id").val();
+            amount = $("#select-credit").val();
+            
+            var userCreditArr = {userId: userId, creditId: creditId, amount: amount};
+            
+            $.ajax({
+                
+                type: "POST",
+                url: '{{path('lost_admin_user_credit')}}',
+                data: {'userCredit' : userCreditArr},
+                success: function(result)
+                {
+                    
+                    var flagArr = jQuery.parseJSON(result);
+                    
+                    if(flagArr['status'] == 'success') {
+                        
+                        $('#user-credit')[0].reset();
+                        flashMsg = disErrorMsg('success',flagArr['message']);
+                        $("#flash-message").html(flashMsg);
+                        $('#creditModal').modal('hide');
+                        
+                        $("html, body").animate({scrollTop:0},"slow");
+                        return true;
+                        
+                        
+                    } else {
+                         $("html, body").animate({scrollTop:0},"slow");
+                         $("#select-credit-error").show();
+                         $("#select-credit-error").html(flagArr['message']);
+                         return false;
+                        
+                    }
+
+                    
+                }
+            });
+
+            return false;
+        }
+    }).validate({
+        rules: {
+            "credit": {
+                "required": true
+            }
+        },
+        messages: {
+            "credit": {
+                "required": "Please select credit"
+            }
+        }
+    });
+
+
+    function disErrorMsg(msgType, msg) {
+
+        var html = '';
+        html += '<div class="alert alert-' + msgType + '">';
+        html += '<button type="button" class="close" data-dismiss="alert">&times;</button>';
+        html += msg
+        html += '</div>';
+        return html;
+    }
+
+</script>
+
+{% endblock javascripts %}

@@ -1,0 +1,202 @@
+{% extends "LostAdminBundle::layout.html.twig" %}
+
+{% block body %}
+<section class="content-header">
+	  <h1>Add Service Location Bundle Discount</h1>
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+		<div class="box box-success">
+          <form action="{{ path('lost_admin_service_location_discount_new') }}" method="POST" {{ form_enctype(form) }} class="form-horizontal" id="form-location-discount">
+                <div class="box-body">
+		            
+					<div class="form-group col-md-8">
+                    <label class="control-label">Service Location: </label>
+                   
+                        {{ form_widget(form.serviceLocation, { 'attr': { 'placeholder': 'Service Location', 'class': 'form-control'}}) }}
+                        <div class="serverError">{{ form_errors(form.serviceLocation) }}</div>
+                    
+                    </div>
+                
+                {% macro tagCollectionItem(formData) %}
+                   	{% if formData is defined %}
+					    {% set name = formData.vars.name %}
+					{% else %}
+					    {% set name = formData.vars.full_name %}
+					{% endif %}
+					
+					<div data-content="{{ name }}" id="discountbx_{{ name }}">
+                   		<input type="hidden" name="numberIndex{{ name }}" value="{{ name }}" id="_txt"/>
+                   		
+                   		<div class="form-group col-md-8">
+		                    <div class="row">
+							<div class=" col-md-6">
+							 
+							 <label class="control-label">From Amount: </label>
+		                    
+		                        {{ form_widget(formData.minAmount, { 'attr': { 'placeholder': 'From Amount', 'class': 'form-control inputFromAmount'}}) }}
+		                        <div class="serverError">{{ form_errors(formData.minAmount) }}</div>
+		                    
+		                    </div>
+		                   <div class="col-md-6">
+		                    <label class="control-label">To Amount: </label>
+		                   
+		                        {{ form_widget(formData.maxAmount, { 'attr': { 'placeholder': 'To Amount', 'class': 'form-control inputToAmount'}}) }}
+		                        <div class="serverError">{{ form_errors(formData.maxAmount) }}</div>
+		                    </div>
+							</div>
+		                </div>
+		                <div class="form-group col-md-8  margin-bottom10">
+		                    <label class="control-label">Discount(%): </label>
+		                    
+		                        {{ form_widget(formData.percentage, { 'attr': { 'placeholder': 'Discount', 'class': 'form-control inputDiscount'}}) }}
+		                        <div class="serverError">{{ form_errors(formData.percentage) }}</div>
+		                    
+		                </div>
+		                
+		                <div class="form-group col-md-8 rmbtn  margin-bottom10">
+							<a class="btn-remove btn-add btn btn-default pull-right" data-related="{{ name }}">Remove</a>
+						</div>
+		              								
+				</div>								    
+				{% endmacro %}   
+                <div id="collectionIpzone" data-prototype="{{ _self.tagCollectionItem(form.serviceLocationDiscounts.vars.prototype)|escape }}">
+                   {% for serviceLocationDiscount in form.serviceLocationDiscounts %}
+                   	{{ _self.tagCollectionItem(serviceLocationDiscount) }}                    	                    
+				{% endfor %}                                
+				</div>
+				
+				<div class="col-md-8 add-btn-bx">
+					<a class="btn-add btn btn-success pull-right margin-bottom10" data-target="collectionIpzone">Add More</a>
+				</div>
+                </div>
+				
+                
+                {{ form_rest(form) }}
+                <div class="box-footer">
+				  <div class="col-md-8 add-btn-bx">
+				        <input type="submit" name="add" value="Add" class="btn btn-success"/>
+                        <a href="{{ path('lost_admin_ip_zone_list') }}" class="btn btn-default">Back</a>
+                    </div>
+			   </div>		
+                
+            </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock body %}
+
+{% block javascripts %}
+    {{ parent() }}
+<script type="text/javascript">
+	$('.btn-add').click(function(event) {
+	    var collectionHolder = $('#' + $(this).attr('data-target'));
+	    var prototype = collectionHolder.attr('data-prototype');
+	    var form = prototype.replace(/__name__/g, collectionHolder.children().length);
+	
+	    collectionHolder.append(form);
+	    
+	    addValidationRule();
+	    return false;
+	});
+	$('.btn-remove').live('click', function(event) {
+	    var name = $(this).attr('data-related');
+	    $('*[data-content="'+name+'"]').remove();
+	   
+	    addValidationRule();
+	    return false;
+	});
+	
+	$(document).ready(function() {
+    	var name = $('#discountbx_0 div.rmbtn').remove();
+    	
+        $('#form-location-discount').validate({
+        	rules: {
+                "lost_service_location[serviceLocation]": {
+                    "required": true
+                }
+            },
+            messages: {
+                "lost_service_location[serviceLocation]": {
+                    "required": "Please select service location"
+                }
+            }
+        });
+        
+        addValidationRule();
+    });
+    
+    function addValidationRule(){
+    	
+    	$('.inputFromAmount').each(function() {
+    		
+    		var fromId = this.id; 
+			var toId = fromId.replace('minAmount', "maxAmount");
+			
+            $(this).rules('add', {
+                required: true,
+                number: true,
+                le:'#'+toId,
+                messages: {
+                    required:  "Please enter From Amount",
+                    number:  "Please enter valid amount",
+                    le: "Must be less than or equal to TO amount"
+                }
+            });
+        });
+    	
+		$('.inputToAmount').each(function() {
+			
+			var toId = this.id; 
+			var fromId = toId.replace('maxAmount', "minAmount");
+			
+            $(this).rules('add', {
+                required: true,
+                number: true,
+                ge:'#'+fromId,
+                messages: {
+                    required:  "Please enter To Amount",
+                    number:  "Please enter valid amount",
+                    ge: "Must be greater than or equal to FROM amount."
+                }
+            });
+        });
+		
+		$('.inputDiscount').each(function() {
+    		
+            $(this).rules('add', {
+                required: true,
+                number: true,
+                messages: {
+                    required:  "Please enter discount.",
+                    number:  "Please enter valid discount amount"
+                }
+            });
+        });		
+    }
+    
+	$.validator.addMethod('le', function(value, element, param) {
+		
+		if(parseFloat(value) > parseFloat($(param).val())){
+			return false;
+		}else{
+			return true;
+		}		
+	    //return this.optional(element) || value <= $(param).val();
+	      
+	}, 'Invalid');
+	
+	$.validator.addMethod('ge', function(value, element, param) {
+		
+		if(parseFloat(value) < parseFloat($(param).val())){
+			return false;
+		}else{
+			return true;
+		}
+	      //return this.optional(element) || value >= $(param).val();
+
+	}, 'Invalid');
+</script>
+{% endblock javascripts %}

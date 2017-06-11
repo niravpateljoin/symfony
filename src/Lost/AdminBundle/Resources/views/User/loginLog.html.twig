@@ -1,0 +1,280 @@
+{% extends "LostAdminBundle::layout.html.twig" %}
+{% block stylesheets %}
+{{ parent() }}
+<link href="{{ asset('bundles/lostadmin/css/jquery-ui-1.10.3.custom.min.css') }}" rel="stylesheet">
+<style type="text/css">    
+    .margin-right10{margin-right:10px;}
+    .bld {font-weight: bold;vertical-align: middle;}
+    @media print
+    {
+    header, footer, .noprint, .LostLogo {display:none !important;}
+    tr#headerlink th{text-align: left;}
+    }
+</style>
+{% endblock stylesheets %}
+{% block body %}
+
+            {% include "LostUserBundle::flashMessage.html.twig" %}
+				<!-- Content Header (Page header) -->
+				<section class="content-header">
+					<h1>
+						Search User Log
+					</h1>
+				</section>
+				<section class="content">
+				<div class="row">
+					<div class="col-lg-12">
+					<div class="box box-success">
+					 <form method="get" action="{{ path('lost_admin_user_log', {'id':id}) }}">
+								<div class="box-body">
+								
+                               <div class="col-md-4">
+                                    {# form_widget(form.search, { 'attr': { 'placeholder': 'Name / IP / Country', 'name': 'search', 'class': 'form-control'}}) }}
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form_widget(form.startDate, { 'attr': { 'placeholder' : 'Start Date', 'class': 'form-control'}}) }}
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form_widget(form.endDate, { 'attr': { 'placeholder' : 'End Date', 'class': 'form-control'}}) #}
+                                </div>  
+								
+								</div>
+								<div class="box-footer">
+								<div class="col-sm-6 add-btn-bx">
+                                <input type="submit" value="Search" class="btn btn-success"/>&nbsp;&nbsp; 
+                                <a href="{{ path(app.request.attributes.get('_route')) }}" class="btn btn-default">Clear</a>
+                                
+                                    <a href="javascript:void(0)" class="btn btn-success align_right {% if pagination|length == 0 %} disabled {% endif %}" onclick="print_list();" >Print</a>
+                                {% if(id) %}
+                                    <a href="{{path('lost_admin_user_log_export',app.request.query.all|merge({'id': id}))}}" class="btn btn-success noprint align_right margin-right10 {% if pagination|length == 0 %} disabled {% endif %}">Export PDF</a>
+                                {% else %}
+                                    <a href="{{path('lost_admin_user_log_export',app.request.query.all)}}" class="btn btn-success noprint align_right margin-right10 {% if pagination|length == 0 %} disabled {% endif %}">Export PDF</a>
+                                {% endif%}
+								</div>
+                                </div>
+                           
+                            </form>
+					</div>
+					</div>
+				</div>
+				<div class="row">
+				<div class="col-lg-12">
+				<div class="box box-success">	
+				<div class="box-body">
+                <table class="table table-bordered table-hover">
+					<thead>
+                    <tr id="headerlink">
+                        {# sorting of properties based on query components #}
+                        <th>Id</th>
+                        <th{% if pagination.isSorted('Name') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Name', 'u.firstname') }}</th>
+                        <th{% if pagination.isSorted('IPAddress') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'IP Address', 'l.ipAddress') }}</th>
+                        <th>Service Location</th>
+                        <th>Active Services</th>
+                        <th>Available Services</th>
+                        <th{% if pagination.isSorted('Country') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Country', 'c.name') }}</th>
+                        <th{% if pagination.isSorted('LoggedInTime') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Log In Time', 'l.createdAt') }}</th>
+                    </tr>
+					</thead>
+					<tbody>
+                    {# table body .iptvEnabled  .internetEnabled #}
+                    {% if (pagination|length > 0) %}
+                        {% for index, record in pagination %}
+                        	
+                            <tr>
+                                <td>{{ pagination.getItemNumberPerPage * (pagination.getCurrentPageNumber - 1) + index + 1 }}</td>
+                                <td>{{ record.user.firstname }} {{ record.user.lastname }} </td>
+                                <td>{{ record.ipAddress }}</td>
+                                {{ render(controller('LostAdminBundle:User:getUserServiceDetail', {'userId': record.user.id, 'ipAddress': record.ipAddress} )) }}               
+                                <td>{{ record.country.name }}</td>
+                                <td>{{ record.createdAt | date('M-d-Y H:i:s') }}</td>
+                            </tr>
+                          {#  {% index + 1 %}#}
+                        {% endfor %}
+                    {% else %}
+                        <tr><td colspan="9" align="center">No records found.</td></tr>
+                    {% endif %}
+				</tbody>	
+                </table>
+				</div></div></div></div>
+				<div class="row">
+                <div class="col-xs-12">
+				{# display navigation #}
+                <div class="navigation noprint pull-right">
+                    {{ knp_pagination_render(pagination) }} </span>
+                </div>
+				</div>
+				</div>
+				</section>
+    
+        {% include "LostUserBundle::flashMessage.html.twig" %}
+	<div class="delBoxCont"></div>		
+        
+         <section class="content-header">
+              <h1>SEARCH USER LOG</h1>
+            </section>
+            <section class="content">	
+		
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="box box-success">
+                            <form method="get">
+                                <div class="box-body">
+                                    <div class="form-group col-md-4">                                                        
+                                        <div class="row"><div class="col-sm-12" id="name"></div></div>
+                                    </div>
+                                    <div class="form-group col-md-4">                                                        
+                                        <div class="row"><div class="col-sm-12" id="ip"></div></div>
+                                    </div>
+                                    <div class="form-group col-md-4">                                                        
+                                        <div class="row"><div class="col-sm-12" id="country"></div></div>
+                                    </div>       
+                                    <div class="form-group col-md-8">          
+                                        <div class="row"><div class="col-sm-12" id="date-range"></div></div>
+                                    </div> 
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>		
+                 
+                <div class="box box-success">
+                    <div class="box-body">
+			<div class="row">
+         		    <div class="col-xs-12">  
+                            {# if admin_permission.checkPermission('email_campaign_create') #}
+                                <div class="addNewBtnsGrp">                                 
+                                {% if(id) %}
+                                    <a href="{{path('lost_admin_user_log_export',app.request.query.all|merge({'id': id}))}}" class="btn btn-success noprint pull-right margin-top5 {% if pagination|length == 0 %} disabled {% endif %}">Export PDF</a>
+                                {% else %}
+                                    <a href="{{path('lost_admin_user_log_export',app.request.query.all)}}" class="btn btn-success noprint pull-right margin-top5 {% if pagination|length == 0 %} disabled {% endif %}">Export PDF</a>
+                                {% endif%}   
+                                 <a href="javascript:void(0)" class="btn btn-success pull-right margin-top5 {% if pagination|length == 0 %} disabled {% endif %}" onclick="print_list();" >Print</a>
+                                          </div>
+                            {# endif #}
+			    <table id="loginLogTable" cellpadding="0" cellspacing="0" border="0" class="datatable table table-striped table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Name</th>
+                                        <th>Ip Address</th>
+                                        <th>Service Location</th>
+                                        <th>Active Services</th>
+                                        <th>Available Services</th>
+                                        <th>Country</th>
+                                        <th>LogInTime</th>                                      
+                                    </tr>
+                                </thead>
+                            </table>
+                            </div>
+                        </div>
+                    </div>
+                 </div>        
+            </section>	                            
+                   
+{% endblock body %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/lostadmin/js/jquery-ui-1.10.3.custom.min.js') }}"></script>
+    <script type="text/javascript">
+        
+    $(document).ready(function(){
+             
+            dTable = $('#loginLogTable').dataTable({               
+                "oLanguage": {
+                    "sLengthMenu": "Display _MENU_ Records",
+                    "sZeroRecords": "<center>No Record Found!</center>",
+                    "sInfo": "Showing _START_ to _END_ of _TOTAL_ Records",
+                    "sInfoEmpty": "Showing 0 to 0 of 0 records",
+                    "sInfoFiltered": "(filtered from _MAX_ total records)"
+                },
+                responsive: false,
+                bJQueryUI: false,
+                bProcessing: true,
+                bServerSide: true,
+                bFilter: true,
+                //multipleSelection: true,
+                iDisplayLength: "{{ record_per_page }}",
+                sAjaxSource: "{{ path('lost_admin_user_log_json') }}",
+                aoColumns: [
+                    {"sName": "Id", "bSearchable": false, "bSortable": true},
+                    {"sName": "Name", "bSearchable": true, "bSortable": true},
+                    {"sName": "IpAddress", "bSearchable": true, "bSortable": true},
+                    {"sName": "ServiceLocation", "bSearchable": false, "bSortable": false},
+                    {"sName": "ActiveServices", "bSearchable": false, "bSortable": false},
+                    {"sName": "AvailableServices", "bSearchable": false, "bSortable": false},
+                    {"sName": "Country", "bSearchable": true, "bSortable": true},
+                    {"sName": "Logintime", "bSearchable": true, "bSortable": true},                                                        
+                ],
+                aoColumnDefs: [
+                    {                        
+                        "aTargets": [7]
+                    }
+                ],
+                aaSorting: [[7, 'asc']]
+            });
+            $.datepicker.regional[""].dateFormat = 'yy-mm-dd';
+            $.datepicker.setDefaults($.datepicker.regional['']);
+             $('#loginLogTable').dataTable().columnFilter({
+                 sRangeFormat: "<label class='dateRange1'>From</label> {from} <label class='dateRange2'>To</label> {to}",
+            aoColumns: [
+              null,
+             {type: "text", sSelector: "#name"},
+             {type: "text", sSelector: "#ip"},
+             null,
+             null,
+             null,
+             {type: "text", sSelector: "#country"},
+             {type: "date-range", sSelector: "#date-range"},
+            ]
+        });
+
+        $("input").addClass("form-control");
+        $("select").addClass("form-control");
+        });
+        
+        var temp_pickup_first = temp_pickup_last = temp_request_first = temp_request_last = 0;
+        jQuery(document).on("focus", "div.pickup-date-control #date-range input:last", function(){
+	var fromDate = $('#date-range input:first').val();
+	if(temp_pickup_last == 0 && fromDate != '') {	
+        $(this).datepicker('option', 'minDate', fromDate);
+        temp_pickup_first = 0;
+        temp_pickup_last++;
+	}
+    });
+
+    jQuery(document).on("focus", "div.pickup-date-control #date-range input:first", function(){
+	var toDate = $('#date-range input:last').val();
+	if(temp_pickup_first == 0 && toDate != '') {
+		
+                $(this).datepicker('option', 'maxDate', toDate);
+		temp_pickup_first++;
+		temp_pickup_last = 0;
+	}
+    });
+
+           
+        
+    function print_list() {
+        $.each($('tr#headerlink a'), function(){
+            $(this).attr('rel', $(this).attr('href'));
+            $(this).removeAttr('href');
+        });
+
+        window.print();
+        
+        $.each($('tr#headerlink a'), function(){
+            $(this).attr('href', $(this).attr('rel'));
+            $(this).removeAttr('rel');
+        });
+        
+        {% set url = path('lost_admin_user_log_print') %}
+        {% if id %}
+            {% set url = path('lost_admin_user_log_print',{'id': id}) %}
+        {% endif%}
+        $.ajax({
+            url: '{{url}}',
+            async: false,
+        });
+    }
+    </script>
+{% endblock javascripts %}

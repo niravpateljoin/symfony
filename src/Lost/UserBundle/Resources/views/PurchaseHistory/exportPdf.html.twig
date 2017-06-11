@@ -1,0 +1,83 @@
+{% block body %}
+	<h1>Purchase History</h1>  
+	<table cellspacing="0" cellpadding="5" border="1" class="purchase_table">
+		<tr class="head">
+		
+			<th>Order Number</th>
+			<th>Service</th>
+			<th>Package</th>
+			<th>Amount</th>
+			<th>Status</th>
+			<th>Activation Date</th>
+			<th>Expiration Date</th>
+			<th>Purchase Date</th>
+			<th>Payment Method</th>
+            <th>Compensation Validity</th>			            
+		</tr>
+		{% set i = 0 %}
+	    {% if (purchaseData | length) %} 
+            {% for record in purchaseData %}
+            	{% set trcls = 'oddrow' %}
+            	{% if i % 2 != 0 %}
+            		{% set trcls = 'evenrow' %}
+            	{% endif %}
+        
+                        {% set serviceStatus = '' %}
+                    	{% set activationDate = '' %}
+                    	{% set expiryDate = '' %}
+                    	{% set packageName = '' %}
+                    	{% set amount = '' %}
+        
+                        
+                    	{% if record.userService %}
+                    	
+                    		{% set amount = record.userService.payableAmount %}
+                    		{% set packageName = record.userService.packageName %}
+                    		{% set serviceStatus = record.userService.displayStatus %}
+                    		{% set activationDate = record.userService.activationDate|date('M-d-Y') %}
+                    		{% set expiryDate = record.userService.expiryDate|date('M-d-Y') %}                    		
+                        {% endif %}
+                        
+                    	{% if record.isCredit == 1 %}
+                    		{% set packageName = 'Credit Purchase' %}
+						{% endif %}
+        
+                <tr class="{{ trcls }}">
+                    <td>
+                         {% if record.purchaseOrder %}
+                        
+                                    {{ record.purchaseOrder.orderNumber ? record.purchaseOrder.orderNumber : '' }}
+                         {% endif %}
+                    </td>
+                    <td>{% if record.service %}{{ record.service.name  }}{% endif %}</td>
+                    <td>{{ packageName }}</td>
+                    <td>{{ record.payableAmount }}</td>
+                    <td>{{ serviceStatus }}</td>
+                    <td>{{ activationDate }}</td>
+                    <td>{{ expiryDate }}</td>
+                    <td>{% if (record.purchaseOrder is not null) %}
+                            {{ record.purchaseOrder.createdAt|date('M-d-Y H:i:s') }}
+                        {% endif %}
+                    </td>
+					{#<td>{% if (record.purchaseOrder is not null and record.purchaseOrder.paypalCheckout is not null) %}{{ record.purchaseOrder.paypalCheckout.paypalTransactionId }}{% endif %}</td>#}
+                    <td>
+                        {% if (record.purchaseOrder is not null) %}
+                            {% if record.purchaseOrder.paymentMethod is not null %}
+                                {{ record.purchaseOrder.paymentMethod.name }}
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    
+                    <td>
+                        {% if record.purchaseOrder %}    
+                            {{ record.purchaseOrder.compensationValidity ? record.purchaseOrder.compensationValidity~'hours' : '' }}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% set i = i+1 %}
+            {% endfor %}
+        {% else %}
+            <tr><td colspan="9" align="center">No records found.</td></tr>
+        {% endif %}	
+	</table>	
+{% endblock body %}

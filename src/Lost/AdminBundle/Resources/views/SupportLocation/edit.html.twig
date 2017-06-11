@@ -1,0 +1,65 @@
+{% extends "LostAdminBundle::layout.html.twig" %}
+
+{% block body %}
+<section class="content-header">
+	   <h1>Edit Support Location</h1>
+	</section>	
+<section class="content">
+        <div class="row">
+           <div class="col-md-12">
+           <div class="box box-success">
+               <form action="{{ path('lost_admin_support_location_edit', {'id': location.id}) }}" method="POST" id="add_location" class="form-horizontal" novalidate>
+<div class="box-body">
+                    <div class="form-group  col-md-4">
+                        <label class="control-label">Support Location: </label>
+                        
+                            {{ form_widget(form.name, { 'attr': { 'placeholder': 'Support Location', 'class': 'form-control'}}) }}
+                            <div class="serverError">{{ form_errors(form.name) }}</div>
+                        
+                    </div>
+                    
+                    <div class="form-group col-md-4">
+                        <label class="control-label">Location Short Code: </label>
+                        
+                            {{ form_widget(form.code, { 'attr': { 'placeholder': 'Location Short Code', 'class': 'form-control'}}) }}
+                            <div class="serverError">{{ form_errors(form.code) }}</div>
+                        
+                    </div>
+                    </div>
+                    {{ form_rest(form) }}
+
+                    <div>
+                        <div class="box-footer">
+                                <div class="col-md-8 add-btn-bx">
+                            <input type="submit" class="btn btn-success" name="update" value="Update"/>
+                            <a href="{{ path('lost_admin_support_location_list') }}" class="btn btn-default">Back</a>
+                        </div>
+                    </div>
+                    
+                </form>
+           </div>
+        </div>
+    </div>
+	</section>
+   
+{% endblock body %}
+    
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            
+            $("#add_location").validate({
+                rules: {
+                    "lost_user_support_location[name]": "required",
+                    "lost_user_support_location[code]": "required",
+                },
+                messages: {
+                    "lost_user_support_location[name]": "Please enter support location.",
+                    "lost_user_support_location[code]": "Please enter location short code.",
+                }
+            });
+        });
+    </script>
+{% endblock javascripts %}

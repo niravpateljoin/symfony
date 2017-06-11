@@ -1,0 +1,70 @@
+parameters:
+#    lost_user.example.class: Lost\UserBundle\Example
+
+services:
+    lost_user.registration.form.type:
+        class: Lost\UserBundle\Form\Type\RegistrationFormType
+        arguments: [%fos_user.model.user.class%, '@service_container']
+        tags:
+            - { name: form.type, alias: lost_user_registration }
+
+    login_listener:
+            class: Lost\UserBundle\EventListener\LoginListener
+            arguments: ['@router', '@security.context', '@doctrine', '@session', '@service_container']
+            tags:
+                - { name: 'kernel.event_listener', event: 'security.interactive_login' }
+
+    login_user_success_handler:
+        class:  'Lost\UserBundle\EventListener\LoginSuccessHandler'
+        arguments:  [@router, @security.context, @session, @doctrine]
+        tags:
+            - { name: 'monolog.logger', channel: 'security' }
+                
+    logout_listener:
+            class: Lost\UserBundle\EventListener\LogoutListener
+            arguments: ['@router', '@security.context', '@doctrine']
+            tags:
+                - { name: 'kernel.event_listener', event: 'security.interactive_logout' }
+                
+    GeoLocation:
+        class: Lost\UserBundle\Controller\GeoLocationController
+        arguments: 
+            container: "@service_container"
+            
+    BundleDiscount:
+        class: Lost\UserBundle\Controller\BundleDiscountController
+        arguments: 
+            container: "@service_container"                
+    
+    DeersAuthentication:
+        class: Lost\UserBundle\Controller\DeersAuthenticationController
+        arguments: 
+            container: "@service_container"
+    
+    UserLocationWiseService:
+        class: Lost\UserBundle\Controller\UserLocationWiseServiceController
+        arguments: 
+            container: "@service_container"
+    
+    DashboardSummary:
+        class: Lost\UserBundle\Controller\DashboardSummaryController
+        arguments: 
+            container: "@service_container"        
+                            
+    UserWiseService:
+        class: Lost\UserBundle\Controller\UserWiseServiceController
+        arguments: 
+            container: "@service_container"
+
+    ActivityLog:
+        class: Lost\UserBundle\Controller\ActivityLogServiceController
+        arguments: 
+            container: "@service_container"
+            
+    optimizeLogger:
+        class:     Symfony\Bridge\Monolog\Logger
+        arguments: [pushHandler, [@optimizeLogHandler]]
+
+    optimizeLogHandler:
+        class:     Monolog\Handler\StreamHandler
+        arguments: [%kernel.logs_dir%/%kernel.environment%.optimization.log, 200]

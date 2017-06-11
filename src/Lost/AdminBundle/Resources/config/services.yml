@@ -1,0 +1,29 @@
+parameters:
+#    lost_admin.example.class: Lost\AdminBundle\Example
+
+services:
+#    lost_admin.example:
+#        class: %lost_admin.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
+                
+    login_success_handler:
+        class:  'Lost\AdminBundle\EventListener\LoginSuccessHandler'
+        arguments:  ['@router', '@security.context', '@session', '@doctrine']
+        tags:
+            - { name: 'monolog.logger', channel: 'security' }
+
+    admin_permission:
+        class: Lost\AdminBundle\Controller\AdminPermissionController
+        arguments: 
+            container: "@service_container"
+    
+    grid_helper_function:
+        class:  'Lost\AdminBundle\Helper\GridFunction'
+        arguments:  [@doctrine]        
+            
+#    kernel.listener.accessDenied:        
+#        class: 'Lost\AdminBundle\EventListener\AccessDeniedListener'
+#        scope: request
+#        arguments: ["@session", "@router", "@request"]
+#        tags:
+#           - { name: kernel.event_listener, event: kernel.exception, method: onAccessDeniedException }

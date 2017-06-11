@@ -1,0 +1,59 @@
+{% extends "LostAdminBundle::layout.html.twig" %}
+
+{% block body %}
+<section class="content-header">
+		 <h1>Edit Support Category</h1>
+</section>
+<section class="content">
+       <div class="row">
+        <div class="col-md-12">
+           <div class="box box-success">
+               <form action="{{ path('lost_admin_support_category_edit', {'id': category.id}) }}" method="POST" id="add_category" class="form-horizontal" novalidate>
+					<div class="box-body">
+		  			  
+						<div class="form-group col-md-4">
+                        <label control-label">Name: </label>
+                        
+                            {{ form_widget(form.name, { 'attr': { 'placeholder': 'Name', 'class': 'form-control'}}) }}
+                            <div class="serverError">{{ form_errors(form.name) }}</div>
+                        
+                    	</div>
+						
+						</div>
+                    
+                    {{ form_rest(form) }}
+
+                    <div class="box-footer">
+                                <div class="col-md-8 add-btn-bx">
+                        
+                            <input type="submit" class="btn btn-success" name="update" value="Update"/>
+                            <a href="{{ path('lost_admin_support_category_list') }}" class="btn btn-default">Back</a>
+                        </div>
+                    </div>
+                    
+                </form>
+				
+			  </div>
+            </div>
+        </div>
+ </section>
+   
+{% endblock body %}
+    
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            
+            $("#add_category").validate({
+                rules: {
+                    "lost_user_support_category[name]": "required",
+                },
+                messages: {
+                    "lost_user_support_category[name]": "Please enter category.",
+                }
+            });
+        });
+    </script>
+{% endblock javascripts %}

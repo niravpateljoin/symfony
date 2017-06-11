@@ -1,0 +1,475 @@
+admin_login:
+    pattern:  /login
+    defaults: { _controller: LostAdminBundle:Security:login }
+    
+admin_login_check:
+    pattern:  /login_check
+    defaults: { _controller: FOSUserBundle:Security:check }
+
+admin_logout:
+    pattern:  /logout
+    defaults: { _controller: FOSUserBundle:Security:logout }
+    
+lost_admin_dashboard:
+    pattern:  /dashboard
+    defaults: { _controller: LostAdminBundle:Dashboard:index }
+    
+lost_admin_user_list:
+    pattern:  /user/user-list
+    defaults: { _controller: LostAdminBundle:User:index }
+    
+lost_admin_list:
+    pattern:  /admin-list
+    defaults: { _controller: LostAdminBundle:Admin:index }
+    
+lost_admin_new:
+    pattern:  /add-new-admin
+    defaults: { _controller: LostAdminBundle:Admin:new }
+
+lost_admin_edit:
+    pattern:  /edit-admin/{id}
+    defaults: { _controller: LostAdminBundle:Admin:edit }
+
+lost_admin_delete:
+    pattern:  /delete-admin/{id}
+    defaults: { _controller: LostAdminBundle:Admin:delete }
+ 
+lost_user_new:
+    pattern:  /add-customer
+    defaults: { _controller: LostAdminBundle:User:new }
+
+lost_admin_edit_customer:
+    pattern:  /edit-customer/{id}
+    defaults: { _controller: LostAdminBundle:User:edit }
+
+lost_admin_delete_customer:
+    pattern:  /delete-customer/{id}
+    defaults: { _controller: LostAdminBundle:User:delete }
+
+lost_admin_view_customer:
+    pattern:  /view-customer/{id}
+    defaults: { _controller: LostAdminBundle:User:view }
+    
+lost_admin_password_resetting_request:
+    pattern:  /resetting/request
+    defaults: { _controller: LostAdminBundle:Resetting:request }
+
+lost_admin_password_reset_success:
+    path:     /resetting/password-reset-success
+    defaults: { _controller: LostAdminBundle:Resetting:resetSuccess }
+
+lost_admin_resetting_send_email:
+    path:     /resetting/check-email
+    defaults: { _controller: LostAdminBundle:Resetting:sendEmail }
+
+lost_admin_resetting_check_email:
+    path:     /resetting
+    defaults: { _controller: LostAdminBundle:Resetting:checkEmail }
+
+lost_admin_reset_password:
+    path:     /resetting/reset/{token}
+    defaults: { _controller: LostAdminBundle:Resetting:reset }
+
+lost_admin_email_campaign_new:
+    pattern:  /email-campaign/add-email-campaign
+    defaults: { _controller: LostAdminBundle:EmailCampaign:new }
+    
+lost_admin_email_campaign_list:
+    pattern:  /email-campaign/email-campaign-list
+    defaults: { _controller: LostAdminBundle:EmailCampaign:index }
+    
+lost_admin_email_campaign_edit:
+    pattern:  /email-campaign/edit-email-campaign/{id}
+    defaults: { _controller: LostAdminBundle:EmailCampaign:edit }
+    
+lost_admin_email_campaign_delete:
+    pattern:  /email-campaign/delete-email-campaign
+    defaults: { _controller: LostAdminBundle:EmailCampaign:delete }
+    
+lost_admin_email_campaign_list_json:
+    pattern:  /email-campaign/email-campaign-list-json
+    defaults: { _controller: LostAdminBundle:EmailCampaign:emailCampaignListJson }    
+    
+lost_admin_email_campaign_send:
+    pattern:  /email-campaign/send-email-campaign/{id}
+    defaults: { _controller: LostAdminBundle:EmailCampaign:sendEmail }
+
+lost_admin_user_log:
+    pattern:  /user/user-login-log/{id}
+    defaults: { _controller: LostAdminBundle:User:loginLog, id:0 }
+    
+lost_admin_user_log_export:
+    pattern:  /user/user-login-log-export/{id}
+    defaults: { _controller: LostAdminBundle:User:loginLogExport, id:0 }
+
+lost_admin_user_log_print:
+    pattern:  /user/user-login-log-print/{id}
+    defaults: { _controller: LostAdminBundle:User:loginLogPrint, id:0 }
+    
+lost_admin_user_log_json:
+    pattern:  /user/user-login-log-json/{id}
+    defaults: { _controller: LostAdminBundle:User:loginLogListJson, id:0 }    
+    
+lost_countrywiseservice_new:
+    pattern:  /service/add-countrywise-service
+    defaults: { _controller: LostAdminBundle:CountrywiseService:new }
+   
+lost_countrywiseservice_list:
+    pattern:  /service/countrywise-service-list
+    defaults: { _controller: LostAdminBundle:CountrywiseService:index }
+    
+lost_countrywiseservice_delete:
+    pattern:  /service/delete-countrywise-service/{id}
+    defaults: { _controller: LostAdminBundle:CountrywiseService:delete, id:0 }
+    
+lost_countrywiseservice_edit:
+    pattern:  /service/edit-countrywise-service/{id}
+    defaults: { _controller: LostAdminBundle:CountrywiseService:edit }
+
+lost_admin_setting_new:
+    pattern:  /setting/add-setting
+    defaults: { _controller: LostAdminBundle:Setting:new }
+
+lost_admin_setting_edit:
+    pattern:  /setting/edit-setting/{id}
+    defaults: { _controller: LostAdminBundle:Setting:edit }
+
+lost_admin_setting_delete:
+    pattern:  /setting/delete-setting
+    defaults: { _controller: LostAdminBundle:Setting:delete }
+
+lost_admin_setting_list:
+    pattern:  /setting/setting-list
+    defaults: { _controller: LostAdminBundle:Setting:index }
+    
+lost_admin_setting_list_json:
+    pattern:  /setting/setting-list-json
+    defaults: { _controller: LostAdminBundle:Setting:settingListJson }       
+    
+lost_admin_service_new:
+    pattern:  /service/add-service
+    defaults: { _controller: LostAdminBundle:Services:new }
+   
+lost_admin_service_list:
+    pattern:  /service/service-list
+    defaults: { _controller: LostAdminBundle:Services:index }
+    
+lost_admin_service_delete:
+    pattern:  /service/delete-service
+    defaults: { _controller: LostAdminBundle:Services:delete}
+    
+lost_admin_service_edit:
+    pattern:  /service/edit-service/{id}
+    defaults: { _controller: LostAdminBundle:Services:edit }
+    
+lost_admin_service_list_json:
+    pattern:  /service/service-list-json
+    defaults: { _controller: LostAdminBundle:Services:serviceListJson }    
+    
+lost_admin_audit_logs:
+    pattern:  /audit-logs
+    defaults: { _controller: LostAdminBundle:UserActivityLog:index }
+    
+lost_admin_ip_zone_list:
+    pattern:  /service-location-list
+    defaults: { _controller: LostAdminBundle:IpAddressZone:index }
+    
+lost_admin_ip_zone_new:
+    pattern:  /add-service-location
+    defaults: { _controller: LostAdminBundle:IpAddressZone:new }
+    
+lost_admin_ip_zone_edit:
+    pattern:  /edit-service-location/{id}
+    defaults: { _controller: LostAdminBundle:IpAddressZone:edit }
+
+lost_admin_ip_zone_delete:
+    pattern:  /delete-service-location/{id}
+    defaults: { _controller: LostAdminBundle:IpAddressZone:delete, id:0 }
+
+lost_admin_ajax_ip_zone_delete:
+    pattern:  /ajax-delete-service-location
+    defaults: { _controller: LostAdminBundle:IpAddressZone:ajaxDelete}        
+
+lost_admin_support_list:
+    pattern:  /support/support-list
+    defaults: { _controller: LostAdminBundle:Support:index }
+    
+lost_user_support_change_status:
+    path:     /support/change-status/{id}/{status}
+    defaults: { _controller: LostAdminBundle:Support:changeStatus }
+    
+lost_user_support_view:
+    path:     /support/view-support/{id}
+    defaults: { _controller: LostAdminBundle:Support:view }
+    
+lost_admin_support_category_list:
+    path:     /support-category/category-list
+    defaults: { _controller: LostAdminBundle:SupportCategory:index }
+
+lost_admin_support_category_new:
+    path:     /support-category/add-category
+    defaults: { _controller: LostAdminBundle:SupportCategory:new }
+    
+lost_admin_support_category_edit:
+    path:     /support-category/edit-category/{id}
+    defaults: { _controller: LostAdminBundle:SupportCategory:edit }
+    
+lost_admin_support_category_delete:
+    path:     /support-category/delete-category
+    defaults: { _controller: LostAdminBundle:SupportCategory:delete }
+    
+lost_admin_support_category_list_json:  
+    pattern:  /global-discount/support-category-list-json
+    defaults: { _controller: LostAdminBundle:SupportCategory:supportCategoryListJson } 
+    
+lost_admin_support_location_list:
+    path:     /support-location/location-list
+    defaults: { _controller: LostAdminBundle:SupportLocation:index }
+
+lost_admin_support_location_new:
+    path:     /support-location/add-location
+    defaults: { _controller: LostAdminBundle:SupportLocation:new }
+    
+lost_admin_support_location_edit:
+    path:     /support-location/edit-location/{id}
+    defaults: { _controller: LostAdminBundle:SupportLocation:edit }
+    
+lost_admin_support_location_delete:
+    path:     /support-location/delete-location
+    defaults: { _controller: LostAdminBundle:SupportLocation:delete}
+
+lost_admin_support_location_list_json:   
+    path:     /support-location/support-location-list-json
+    defaults: { _controller: LostAdminBundle:SupportLocation:supportLocationListJson }
+
+lost_admin_package_list:
+    path:     /package/package-list
+    defaults: { _controller: LostAdminBundle:Package:index }
+
+lost_admin_package_new:
+    path:     /package/add-package
+    defaults: { _controller: LostAdminBundle:Package:new }
+    
+lost_admin_package_edit:
+    path:     /package/edit-package/{id}
+    defaults: { _controller: LostAdminBundle:Package:edit }
+    
+lost_admin_package_delete:
+    path:     /package/delete-package/{id}
+    defaults: { _controller: LostAdminBundle:Package:delete, id:0 }
+
+lost_admin_user_service_status:
+    path:     /user/service-status/{userId}/{serviceSettingId}
+    defaults: { _controller: LostAdminBundle:User:changeServiceStatus }
+    
+lost_admin_user_service_details:
+    path:     /user/service-details/{userId}
+    defaults: { _controller: LostAdminBundle:User:serviceDetail }
+    
+lost_admin_user_add_iptv_package:
+    path:     /user/add-iptv-package/{userId}
+    defaults: { _controller: LostAdminBundle:User:addIptvPackage }
+    
+lost_admin_user_save_iptv_package:
+    path:     /user/save-iptv-package
+    defaults: { _controller: LostAdminBundle:User:saveIptvPackage }
+    
+lost_admin_user_remove_iptv_package:
+    path:     /user/remove-iptv-package/{userId}/{packageId}
+    defaults: { _controller: LostAdminBundle:User:removeIptvPackage }
+    
+lost_admin_user_purchase:
+    pattern:  /user/purchase-history
+    defaults: { _controller: LostAdminBundle:User:purchaseHistory }
+    
+lost_admin_user_purchase_list_json:
+    pattern:  /user/purchase-history-list-json
+    defaults: { _controller: LostAdminBundle:User:purchaseHistoryListJson }    
+    
+lost_admin_user_purchase_export_pdf:
+    pattern:  /user/purchase-history-export-pdf
+    defaults: { _controller: LostAdminBundle:User:exportpdf }
+
+lost_admin_user_purchase_export_csv:
+    pattern:  /user/purchase-history-export-csv
+    defaults: { _controller: LostAdminBundle:User:exportCsv }
+
+lost_admin_group_list:
+    path:     /group/group-list
+    defaults: { _controller: LostAdminBundle:Group:index }
+
+lost_admin_group_new:
+    path:     /group/add-group
+    defaults: { _controller: LostAdminBundle:Group:new }
+
+lost_admin_group_edit:
+    path:     /group/edit-group/{id}
+    defaults: { _controller: LostAdminBundle:Group:edit }
+
+lost_admin_group_delete:
+    path:     /group/delete-group/{id}
+    defaults: { _controller: LostAdminBundle:Group:delete, id:0 }
+    
+lost_admin_group_permission:
+    path:     /group/permissions/{id}
+    defaults: { _controller: LostAdminBundle:Group:permission, id:0 }
+    
+lost_admin_group_list_json:
+     pattern:  /group/group-list-json
+     defaults: { _controller: LostAdminBundle:Group:groupListJson }  
+    
+    
+lost_admin_group_check:
+    path:     /group/check
+    defaults: { _controller: LostAdminBundle:Group:check }    
+
+lost_admin_permission_list:
+    path:     /permission/permission-list
+    defaults: { _controller: LostAdminBundle:Permission:index }
+
+lost_admin_permission_new:
+    path:     /permission/add-permission
+    defaults: { _controller: LostAdminBundle:Permission:new }
+
+lost_admin_permission_edit:
+    path:     /permission/edit-permission/{id}
+    defaults: { _controller: LostAdminBundle:Permission:edit }
+
+lost_admin_permission_delete:
+    path:     /permission/delete-permission/{id}
+    defaults: { _controller: LostAdminBundle:Permission:delete, id:0 }
+    
+lost_admin_permission_list_json:
+     pattern:  /permission/permission-list-json
+     defaults: { _controller: LostAdminBundle:Permission:permissionListJson }    
+   
+lost_admin_service_location_discount_list:
+    pattern:  /service/location-discount-list
+    defaults: { _controller: LostAdminBundle:ServiceLocationDiscount:index }
+    
+lost_admin_service_location_discount_edit:
+    pattern:  /service/edit-location-discount/{id}
+    defaults: { _controller: LostAdminBundle:ServiceLocationDiscount:edit }
+    
+lost_admin_service_location_discount_new:
+    pattern:  /service/add-location-discount
+    defaults: { _controller: LostAdminBundle:ServiceLocationDiscount:new }
+    
+lost_admin_service_location_discount_delete:
+    pattern:  /service/delete-location-discount/{id}
+    defaults: { _controller: LostAdminBundle:ServiceLocationDiscount:delete, id:0 }
+    
+
+lost_admin_global_discount_list:
+    path:     /global-discount/global-discount-list
+    defaults: { _controller: LostAdminBundle:GlobalDiscount:index }
+
+lost_admin_global_discount_new:
+    path:     /global-discount/add-global-discount
+    defaults: { _controller: LostAdminBundle:GlobalDiscount:new }
+
+lost_admin_global_discount_edit:
+    path:     /global-discount/edit-global-dicount/{id}
+    defaults: { _controller: LostAdminBundle:GlobalDiscount:edit }
+
+lost_admin_global_discount_delete:
+    path:     /global-discount/delete-global-discount
+    defaults: { _controller: LostAdminBundle:GlobalDiscount:delete}
+    
+lost_admin_global_discount_list_json:
+    pattern:  /global-discount/global-discount-list-json
+    defaults: { _controller: LostAdminBundle:GlobalDiscount:globalDiscountListJson }        
+
+
+lost_admin_service_location:
+    path:     /admin-service-location/{id}
+    defaults: { _controller: LostAdminBundle:AdminServiceLocation:index}
+
+lost_admin_customer_refund:
+    path:     /refund/{id}/{userId}
+    defaults: { _controller: LostAdminBundle:User:refund }
+    
+lost_admin_mac_address:
+    path:     /mac-address/{id}/{type}/{userId}
+    defaults: { _controller: LostAdminBundle:UserMacAddress:macAddress, id:0, type:null, userId:null}
+
+lost_admin_mac_address_list:
+    path:     /mac-address-list/{id}
+    defaults: { _controller: LostAdminBundle:UserMacAddress:listMacAddress, id:0}
+
+lost_admin_mac_address_remove:
+    path:     /mac-address-remove/{id}/{userId}
+    defaults: { _controller: LostAdminBundle:UserMacAddress:deleteMacAddress, userId:0}
+    
+lost_admin_mac_address_edit:
+    path:     /edit-mac-address/{id}/{userId}
+    defaults: { _controller: LostAdminBundle:UserMacAddress:editMacAddress}
+    
+lost_admin_mac_address_add:
+    path:     /add-mac-address
+    defaults: { _controller: LostAdminBundle:UserMacAddress:addMacAddress}
+
+lost_admin_compensation_list:
+    pattern:  /compensation-list
+    defaults: { _controller: LostAdminBundle:Compensation:index }
+    
+lost_admin_compensation_new:
+    pattern:  /add-new-compensation
+    defaults: { _controller: LostAdminBundle:Compensation:new }
+
+lost_admin_compensation_edit:
+    pattern:  /edit-compensation/{id}
+    defaults: { _controller: LostAdminBundle:Compensation:edit }
+
+lost_admin_compensation_delete:
+    pattern:  /delete-compensation
+    defaults: { _controller: LostAdminBundle:Package:deleteCompensation }
+    
+lost_admin_compensation_list_json:
+    pattern:  /compensation-list-json
+    defaults: { _controller: LostAdminBundle:Compensation:compensationListJson }    
+
+lost_admin_compensation_validation:
+    pattern:  /validate-compensation
+    defaults: { _controller: LostAdminBundle:Compensation:validateData }
+    
+lost_admin_compensation_search_user:
+    pattern:  /search-user
+    defaults: { _controller: LostAdminBundle:Compensation:searchUser }
+    
+lost_admin_compensation_search_service_location:
+    pattern:  /search-service_location
+    defaults: { _controller: LostAdminBundle:Compensation:searchServiceLocation }  
+    
+lost_admin_compensation_remove_autocomplete_data:              
+    pattern:  /remove-autocomplete-data
+    defaults: { _controller: LostAdminBundle:Compensation:removeAutoCompleteData }
+    
+lost_admin_compensation_preview:              
+    pattern:  /compensation-preview
+    defaults: { _controller: LostAdminBundle:Compensation:previewCompensation }
+
+lost_admin_credit_list:
+    path:   /credit/credit-list
+    defaults: { _controller: LostAdminBundle:Credit:index }
+
+lost_admin_credit_new:
+    path:   /credit/add-credit
+    defaults: { _controller: LostAdminBundle:Credit:new }
+
+lost_admin_credit_edit:
+    path:   /credit/edit-credit/{id}
+    defaults: { _controller: LostAdminBundle:Credit:edit }
+    
+lost_admin_credit_delete:
+    path:   /credit/delete-credit
+    defaults: { _controller: LostAdminBundle:Credit:delete } 
+    
+lost_admin_credit_list_json:
+    path:   /credit/credit-list-json
+    defaults: { _controller: LostAdminBundle:Credit:creditListJson }        
+
+lost_admin_user_credit:
+    path:   /user-credit
+    defaults: { _controller: LostAdminBundle:User:credit } 
+    

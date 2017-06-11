@@ -1,0 +1,269 @@
+{% extends "LostAdminBundle::layout.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/lostadmin/css/jquery-ui-1.10.3.custom.min.css') }}" rel="stylesheet">
+    <style type="text/css">
+        .margin-top10 { margin-top:10px; }
+        .ui-datepicker-trigger { float: right; margin-top: -24px; margin-right: 1px; }
+    </style>
+{% endblock stylesheets %}
+
+{% block body %}
+            {% include "LostUserBundle::flashMessage.html.twig" %}
+			<!-- Content Header (Page header) -->
+			<section class="content-header">
+				<h1>Search Audit Log</h1>
+			</section>
+            <section class="content">
+		 	<div class="row">
+			<div class="col-lg-12">
+			<div class="box box-success">
+            <form method="get" action="{{ path('lost_admin_audit_logs') }}" class="form-horizontal">
+                            <div class="box-body">
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <input type="text" name="admin" placeholder="Admin" value="{{ (app.request.get('admin')) ? app.request.get('admin') : ''}}" class="form-control">
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" name="user" placeholder="User" value="{{ (app.request.get('user')) ? app.request.get('user') : ''}}" class="form-control">
+                                </div>
+                                <div class="col-md-3">
+                                    <select name="activity" class="form-control" id="activity">
+                                        <option value="">Activity</option>
+                                        <option value="Login">Login</option>
+                                        <option value="Logout">Logout</option>
+                                        <option value="Registration">Registration</option>
+                                        <option value="Email Confirmation">Email Confirmation</option>
+                                        <option value="Resend activation email">Resend activation email</option>
+                                        <option value="Forgot password request">Forgot password request</option>
+                                        <option value="Reset password">Reset password</option>
+                                        <option value="Update user account">Update user account</option>
+                                        <option value="Change password">Change password</option>
+                                        <option value="Update account setting">Update account setting</option>
+                                        {#<option value="Add phone number">Add phone number</option>
+                                        <option value="Edit phone number">Edit phone number</option>
+                                        <option value="Delete phone number">Delete phone number</option>
+                                        <option value="Verify phone number">Verify phone number</option>#}
+                                        {#<option value="Resend verification code">Resend verification code</option>#}
+                                        {#<option value="Search purchase history">Search purchase history</option>
+                                        <option value="Export PDF">Export PDF</option>
+                                        <option value="Print purchase history">Print purchase history</option>#}
+                                        
+                                        <option value="Search admin">Search admin</option>
+                                        <option value="Add admin">Add admin</option>
+                                        <option value="Edit admin">Edit admin</option>
+                                        <option value="Admin change password">Admin change password</option>
+                                        <option value="Delete admin">Delete admin</option>
+                                        
+                                        {#<option value="User phone settings">User phone settings</option>#}
+                                        
+                                        <option value="Search user">Search user</option>
+                                        <option value="Add user">Add user</option>
+                                        <option value="Edit user">Edit user</option>
+                                        <option value="Delete user">Delete user</option>
+                                        <option value="Change user password">Change user password</option>
+                                        
+                                        <option value="Search Email Campaign">Search Email Campaign</option>
+                                        <option value="Add Email Campaign">Add Email Campaign</option>
+                                        <option value="Edit Email Campaign">Edit Email Campaign</option>
+                                        <option value="Delete Email Campaign">Delete Email Campaign</option>
+                                        <option value="Send Email Campaign">Send Email Campaign</option>
+                                        
+                                        {#<option value="Search paypal transaction history">Search paypal transaction history</option>
+                                        <option value="Add credit rate">Add credit rate</option>
+                                        <option value="Edit credit rate">Edit credit rate</option>
+                                        <option value="Delete credit rate">Delete credit rate</option>
+                                        <option value="Search credit rate">Search credit rate</option>#}
+                                        
+                                        <option value="Search user login log">Search user login log</option>
+                                        <option value="Export user login log pdf">Export user login log pdf</option>
+                                        <option value="Print user login log">Print user login log</option>
+                                        
+                                        <option value="Search service">Search service</option>
+                                        <option value="Add service">Add service</option>
+                                        <option value="Edit service">Edit service</option>
+                                        <option value="Delete service">Delete service</option>
+                                        
+                                        <option value="Search country wise service">Search country wise service</option>
+                                        <option value="Add country wise service">Add country wise service</option>
+                                        <option value="Edit country wise service">Edit country wise service</option>
+                                        <option value="Delete country wise service">Delete country wise service</option>
+                                        
+                                        <option value="Search Setting">Search Setting</option>
+                                        <option value="Add Setting">Add Setting</option>
+                                        <option value="Edit Setting">Edit Setting</option>
+                                        <option value="Delete Setting">Delete Setting</option>
+                                    </select>
+    {#                                <input type="text" name="activity" placeholder="Activity" value="{{ (app.request.get('activity')) ? app.request.get('activity') : ''}}" class="form-control">#}
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" name="ip" placeholder="IP" value="{{ (app.request.get('ip')) ? app.request.get('ip') : ''}}" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <input type="text" name="startDate" id="startDate" placeholder="Start Date" value="{{ (app.request.get('startDate')) ? app.request.get('startDate') : ''}}" class="form-control">
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" name="endDate" id="endDate" placeholder="End Date" value="{{ (app.request.get('endDate')) ? app.request.get('endDate') : ''}}" class="form-control">
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="checkbox" name="historicalData" id="historicalData" {% if app.request.get('historicalData') == 'on' %}checked{% endif %}>Search Historical Data
+                                </div>
+                            </div>
+                            </div>
+                            <div class="box-footer">
+                            <div class="col-sm-6 add-btn-bx">	
+                                    
+                                        <input type="submit" value="Search" class="btn btn-success"/>&nbsp;&nbsp;
+                                        <a href="{{ path(app.request.attributes.get('_route')) }}" class="btn btn-default">Clear</a>
+                            </div>
+                            </div>
+                        </form>
+            </div>
+			</div>	
+			</div> 
+            
+            <div class="box box-success">
+        <div class="box-body">
+		<div class="row">
+            <div class="col-xs-12">	
+            <table class="table table-bordered table-hover">
+			<thead>
+                <tr>
+                    <th>{{ knp_pagination_sortable(pagination, 'Id', 'al.id') }}</th>
+                    <th{% if pagination.isSorted('user') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Admin', 'al.user') }}</th>
+                    <th{% if pagination.isSorted('admin') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'User', 'al.admin') }}</th>
+                    <th{% if pagination.isSorted('activity') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Activity', 'al.activity') }}</th>
+                    <th width="25%">Description</th>
+                    <th{% if pagination.isSorted('ip') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'IP', 'al.ip') }}</th>
+                    <th{% if pagination.isSorted('timestamp') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Date Time', 'al.timestamp') }}</th>
+                </tr>
+			</thead>
+            <tbody>
+                {% if (pagination|length > 0) %}
+                    {% for record in pagination %}
+                        <tr {% if loop.index is odd %}class="color"{% endif %}>
+                            <td>{{ record.id }}</td>
+                            <td>
+                                {% if record.admin is not null %}
+                                    {{ record.admin }}
+                                {% else %}
+                                    --
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if record.user is not null %}
+                                    {{ record.user }}
+                                {% else %}
+                                    --
+                                {% endif %}
+                            </td>
+                            <td>{{ record.activity }}</td>
+                            <td>{{ record.description }}</td>
+                            <td>{{ record.ip }}</td>
+                            <td>{{ record.timestamp|date('m-d-Y H:i:s') }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="7" align="center">No records found.</td></tr>
+                {% endif %}
+            </tbody>    
+            </table>
+			</div>
+		</div>
+		</div>
+		</div>
+        
+        <div class="row">
+        <div class="col-xs-12">
+            <div class="navigation pull-right">
+                {{ knp_pagination_render(pagination) }}
+            </div>
+        </div>
+        </div>    
+</section>      
+{% endblock body %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="{{ asset('bundles/lostadmin/js/jquery-ui-1.10.3.custom.min.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var maxDays = "-90D";
+            $('#startDate').datepicker({
+                showOn: "both",
+                buttonImage: '{{ asset("bundles/lostadmin/images/calendar.gif") }}',
+                buttonImageOnly: true,
+                dateFormat: 'yy-mm-dd',
+                readOnly: true,
+                minDate: maxDays,
+                maxDate: "0d",                
+                {#onSelect: function(selected) {
+                    $("#endDate").datepicker("option","maxDate", '0D');
+                }#}
+            }).keyup(function(e) {
+                if(e.keyCode == 8 || e.keyCode == 46) {
+                    $.datepicker._clearDate(this);
+                }
+            }).css({'width': $('#startDate').parent().width()-(16+5)+'px', 'float':'left', 'margin-right':'5px'});
+            
+            $('#endDate').datepicker({
+                showOn: "both",
+                buttonImage: '{{ asset("bundles/lostadmin/images/calendar.gif") }}',
+                buttonImageOnly: true,
+                dateFormat: 'yy-mm-dd',
+                readOnly: true,
+                minDate: maxDays,
+                maxDate: '0d',
+                {#onSelect: function(selected) {
+                    $("#startDate").datepicker("option","maxDate", '0D')
+                }#}
+            }).keyup(function(e) {
+                if(e.keyCode == 8 || e.keyCode == 46) {
+                    $.datepicker._clearDate(this);
+                }
+            }).css({'width': $('#endDate').parent().width()-(16+5)+'px', 'float':'left', 'margin-right':'5px'});
+            
+            $("#activity").val('{{ app.request.get('activity')}}');
+            
+            if ($('#historicalData').is(":checked")) {
+                $( "#startDate" ).datepicker( "option", "maxDate", maxDays);
+                $( "#startDate" ).datepicker( "option", "minDate", new Date('2010-01-01'));
+                
+                $( "#endDate" ).datepicker( "option", "maxDate", maxDays);
+                $( "#endDate" ).datepicker( "option", "minDate", new Date('2010-01-01'));
+            }
+
+            $('#historicalData').click(function() {
+                if ($('#historicalData').is(":checked")) {
+                    $( "#startDate" ).datepicker( "option", "maxDate", maxDays);
+                    $( "#startDate" ).datepicker( "option", "minDate", new Date('2010-01-01'));
+                    
+                    $( "#endDate" ).datepicker( "option", "maxDate", maxDays);
+                    $( "#endDate" ).datepicker( "option", "minDate", new Date('2010-01-01'));
+                } else {
+                    $( "#startDate" ).datepicker( "option", "minDate", maxDays);
+                    $( "#startDate" ).datepicker( "option", "maxDate", new Date());
+                    
+                    $( "#endDate" ).datepicker( "option", "minDate", maxDays);
+                    $( "#endDate" ).datepicker( "option", "maxDate", new Date());
+                }
+            });
+            
+            {% if app.request.get('startDate') is not null %}
+                $('#startDate').datepicker("setDate", '{{ app.request.get('startDate') }}' );
+            {% endif %}
+                
+            {% if app.request.get('endDate') is not null %}
+                $('#endDate').datepicker("setDate", '{{ app.request.get('endDate') }}' );
+            {% endif %}
+
+        });
+
+        
+        
+    </script>
+{% endblock javascripts %}

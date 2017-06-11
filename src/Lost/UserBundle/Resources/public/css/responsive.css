@@ -1,0 +1,98 @@
+
+@media screen and (max-width: 1200px) {
+
+.ourServices .servicesTab .nav li a{font-size:16px;}
+.ourServices .servicesTab .tab-content .socialLogo img{margin-right:15px;width:35%;}
+.mainBanner .bannerText{background-size:80%;}
+
+}
+
+@media screen and (max-width: 1023px) {
+
+.headerMain .mainNav nav ul li a{padding:0px 20px;}
+.ourServices .servicesTab .tab-content{margin:0px;}
+.ourServices .servicesTab .tab-content > .tab-pane{padding-top:20px;}
+footer .footerMenu, footer .footerMenu a, footer .copyright{font-size:16px;}
+footer .footerMenu a{margin:0px 10px}
+
+.uversecont .colcont figure a { padding:5px; }
+.uversecont .contblk h2 { font-size:12px; }
+.uversecont .contblk h4 span { float:left !important; } 
+.uversecont .contblk p{ clear:both;   }
+
+}
+
+@media screen and (max-width: 900px) {
+
+
+}
+
+@media screen and (max-width: 767px) {
+
+.headerMain .LostLogo{position:relative;z-index:12345;margin-left:15px;}
+.headerMain .mainNav .cd-secondary-nav-trigger{display:block;float:right;margin:25px 15px 0px 0px;}
+.headerMain .mainNav .container{padding:0px;}
+.headerMain .mainNav nav{float:left;width:100%;margin-top:27px;}
+.headerMain .mainNav nav ul{display:none;}
+.headerMain .mainNav nav ul.is-visible{display:block;}
+.headerMain .mainNav{height:80px;top:0px}
+.headerMain .mainNav nav ul li{width:100%;background:#6c509a;list-style:none;}
+.headerMain .mainNav nav ul li a{background:#6c509a;font-size:16px;line-height:24px;height:auto;padding:5px 15px;text-align:right;}
+.headerMain .mainNav nav ul li a:hover i.menuHover, .headerMain .mainNav nav ul li a.active i.menuHover{display:none;}
+.headerMain .mainNav nav ul li a:hover, .headerMain .mainNav nav ul li a.active{background:#8973ae;color:#ffffff;}
+.headerMain.stickyNav .mainNav{height:45px;}
+.headerMain.stickyNav .mainNav nav{margin-top:8px;}
+.headerMain.stickyNav .container .row{margin:0px;}
+.headerMain.stickyNav .mainNav .cd-secondary-nav-trigger{margin-top:10px;}
+.mainBanner{height:300px;}
+.mainBanner .bannerText{height:200px;bottom:0px;}
+.welcomeText .welcomeIconsBg img{height:45px;margin-top:15px;}
+.ourServices .servicesTab .tab-content .socialLogo img{width:150px;}
+.ourServices .ourServicesImg{right:0px;bottom:0px;background-size:50%;}
+footer{padding:20px 0px;}
+footer .footerMenu a{margin:0px 5px;}
+footer .footerMenu, footer .footerMenu a, footer .copyright{font-size:14px;line-height:18px;}
+footer .copyright{padding:0px;}
+.register{width:96%;margin:2%;}
+.register .registerForm{padding:20px 0px;}
+.register .registerForm h1{font-size:24px;}
+.accountSetting{width:96%;margin:2%;}
+.accountSetting .accountForm{padding:20px 0px;}
+.accountSetting .accountForm h1{font-size:24px;}
+.uverseheader { min-height:inherit; }
+
+}
+
+@media screen and (max-width: 600px) {
+.uverseheader { min-height:inherit; }
+.welcomeText article, .aboutUs article, .ourServices article, .contactUs .twoCol{font-size:14px;line-height:20px;}
+.contactUs .contactForm li input, .contactUs .contactForm li textarea{font-size:14px;line-height:18px;}
+.contactUs .contactForm li{margin-bottom:15px;}
+.contactUs .contactForm li.subjectSubmit input.submitBtn{font-size:24px;line-height:30px;margin:0px 10px;padding:15px 30px;}
+.welcomeText .welcomeIconsBg{width:92%;margin:0px 4%;}
+.welcomeText .welcomeIconsBg img{height:35px;margin-top:20px;}
+.login{width:96%;margin:2%;}
+.login .loginForm{padding:20px 0px;}
+.accountSetting .accountsTab .nav-tabs li{width:32%;}
+
+.account_setting ul.use_mac_add_list li.input_field,
+.account_setting ul.use_mac_add_list li.submit,.setting ul.setting_list li,.setting ul.setting_list li.submit,.account_setting .mac_title li.submit .submitBtn{width:100%;margin: 10px auto;}
+.account_setting ul.use_mac_add_list li.submit .submitBtn,.account_setting .mac_title li.submit{width:100%;margin: 0;}
+.account_setting li#title-mac-address h2{line-height: 36px;}
+}
+
+
+@media screen and (max-width: 479px) {
+.uverseheader { min-height:inherit; }
+.mainBanner{height:225px;}
+.mainBanner .bannerText{height:150px;}
+.welcomeText .welcomeIconsBg{margin:0px 5%;width:90%;}
+.welcomeText .welcomeIconsBg img{margin:20px 5px 0px 5px;}
+.contactUs .contactForm li.subjectSubmit input.submitBtn{margin:0px 5px;padding:12px 25px;}
+.register .registerForm li, .accountSetting .accountForm li{width:100%;}
+.register .registerForm li input, .register .registerForm li select, .accountSetting .accountForm li input, .accountSetting .accountForm li select{width:100%;}
+.accountSetting .accountsTab .nav-tabs li{width:100%;border-bottom:solid 1px #6c509a;}
+.accountSetting .accountsTab .nav-tabs > li > a{margin:0px;}
+.register{display:inline-block;}
+
+}

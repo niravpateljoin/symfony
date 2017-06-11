@@ -1,0 +1,169 @@
+{% extends "LostUserBundle::layout.html.twig" %}
+{% form_theme form 'LostUserBundle::captcha.html.twig' %}
+{% block body %}
+{% block fos_user_content %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+<div class="loginBg">
+	<div class="register">
+    	<div class="registerForm">
+        	<h1>Create an account <a href="{{ url('fos_user_security_login') }}" class="pull-right">Already have an account?</a></h1>
+            <ul class="col2error">
+                <form action="{{ path('fos_user_registration_register') }}" {{ form_enctype(form) }} method="POST" class="fos_user_registration_register" id="fos_user_registration_register" novalidate>
+                    
+                    <li>
+                        {{ form_widget(form.username, { 'attr': {'class': 'pull-left', 'data-prompt-position': 'topRight', 'placeholder': 'Username'}}) }}
+                        <div class="serverError">{% if form_errors(form.username) %}{{ form_errors(form.username) }}{% endif %}</div>
+                    </li>
+                    <li>
+                        {{ form_widget(form.email.first, { 'attr': {'class': 'pull-right', 'data-prompt-position': 'topRight', 'placeholder': 'Email Address'}}) }}
+                        <div class="serverError">{% if form_errors(form.email.first) %}{{ form_errors(form.email.first) }}{% endif %}</div>
+                    </li>
+                    <li>
+                        {{ form_widget(form.email.second, { 'attr': {'class': 'pull-left', 'data-prompt-position': 'topRight', 'placeholder': 'Confirm Email Address'}}) }}
+                        <div class="serverError">{% if form_errors(form.email.second) %}{{ form_errors(form.email.second) }}{% endif %}</div>
+                    </li>
+                    <li>
+                        {{ form_widget(form.plainPassword.first, { 'attr': {'class': 'pull-right', 'data-prompt-position': 'topRight', 'placeholder': 'Password'}}) }}
+                        <div class="serverError">{% if form_errors(form.plainPassword.first) %}{{ form_errors(form.plainPassword.first) }}{% endif %}</div>
+                    </li>
+                    <li>
+                        {{ form_widget(form.plainPassword.second, { 'attr': {'class': 'pull-left', 'data-prompt-position': 'topRight', 'placeholder': 'Confirm Password'}}) }}
+                        <div class="serverError">{% if form_errors(form.plainPassword.second) %}{{ form_errors(form.plainPassword.second) }}{% endif %}</div>
+                    </li>
+                    <li>
+                        {{ form_widget(form.firstname, { 'attr': {'class': 'pull-right', 'data-prompt-position': 'topRight', 'placeholder': 'First Name'}}) }}
+                        <div class="serverError">{% if form_errors(form.firstname) %}{{ form_errors(form.firstname) }}{% endif %}</div>
+                    </li>
+                    <li>  
+                        {{ form_widget(form.lastname, { 'attr': {'class': 'pull-left', 'data-prompt-position': 'topRight', 'placeholder': 'Last Name'}}) }}
+                        <div class="serverError">{% if form_errors(form.lastname) %}{{ form_errors(form.lastname) }}{% endif %}</div>
+                    </li>
+                    <li>
+                        {{ form_widget(form.address, { 'attr': {'class': 'pull-right', 'data-prompt-position': 'topRight', 'placeholder': 'Address'}}) }}
+                        <div class="serverError">{% if form_errors(form.address) %}{{ form_errors(form.address) }}{% endif %}</div>
+                    </li>
+                    <li>
+                        {{ form_widget(form.city, { 'attr': {'class': 'pull-left', 'data-prompt-position': 'topRight', 'placeholder': 'City'}}) }}
+                        <div class="serverError">{% if form_errors(form.city) %}{{ form_errors(form.city) }}{% endif %}</div>
+                    </li>
+                    <li>
+                        {{ form_widget(form.state, { 'attr': {'class': 'pull-right', 'data-prompt-position': 'topRight', 'placeholder': 'State'}}) }}
+                        <div class="serverError">{% if form_errors(form.state) %}{{ form_errors(form.state) }}{% endif %}</div>
+                    </li>
+                    <li>
+                        {{ form_widget(form.zip, { 'attr': {'class': 'pull-left', 'data-prompt-position': 'topRight', 'placeholder': 'Zip Code'}}) }}
+                        <div class="serverError">{% if form_errors(form.zip) %}{{ form_errors(form.zip) }}{% endif %}</div>
+                    </li>
+                    <li>
+                        {{ form_widget(form.country, { 'attr': {'class': 'pull-right', 'data-prompt-position': 'topRight', 'placeholder': 'Country'}}) }}
+                        <div class="serverError">{% if form_errors(form.country) %}{{ form_errors(form.country) }}{% endif %}</div>
+                    </li>
+                    {% if (app.environment != 'test') %}
+                    {{ form_widget(form.captcha) }}
+                    <li></li>
+                    <li>
+                        <div class="serverError">{% if form_errors(form.captcha) %}{{ form_errors(form.captcha) }}{% endif %}</div>
+                    </li>
+                    
+                    <li class="regTerms"><label for="terms">By signing up, I agree to the <a href="#">Terms of Service</a>{{ form_widget(form.terms, { 'attr': {'class': 'pull-left', 'data-prompt-position': 'topRight'}}) }}</label>
+                        <div class="serverError">{% if form_errors(form.terms) %}{{ form_errors(form.terms) }}{% endif %}</div>
+                    </li>   
+                    {% endif %}
+                        {{ form_rest(form) }}
+                    </li>
+                    
+
+                    <li class="submit"><input type="submit" value="{{ 'registration.submit'|trans }}" class="submitBtn"/></li>
+                </form>
+            </ul>
+        </div>
+  </div>
+</div>
+{% endblock fos_user_content %}
+{% endblock body %}
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.validator.addMethod("regex", function(value, element, regexpr) {          
+                return regexpr.test(value);
+            }, "Username can contains character, number and special chars like -_!#$.");
+            
+            $('#fos_user_registration_register').validate({
+                rules: {
+                    "fos_user_registration_form[username]": {
+                        "required": true,
+                        "regex": /^[A-Za-z0-9-_!#$]+$/,
+                        "minlength": 6,
+                        "maxlength": 18,
+                    },
+                    "fos_user_registration_form[email][first]": {
+                        "required": true,
+                        "email": true
+                    },
+                    "fos_user_registration_form[email][second]": {
+                        "required": true,
+                        "equalTo": "#fos_user_registration_form_email_first"
+                    },
+                    "fos_user_registration_form[plainPassword][first]": {
+                        "required": true,
+                        "regex": /^[A-Za-z0-9!@#$_]+$/,
+                        "minlength": 8,
+                        "maxlength": 18,
+                    },
+                    "fos_user_registration_form[plainPassword][second]": {
+                        "required": true,
+                        "equalTo": "#fos_user_registration_form_plainPassword_first"
+                    },
+                    "fos_user_registration_form[firstname]": "required",
+                    "fos_user_registration_form[lastname]": "required",
+                    "fos_user_registration_form[address]": "required",
+                    "fos_user_registration_form[city]": "required",
+                    "fos_user_registration_form[state]": "required",
+                    "fos_user_registration_form[zip]": "required",
+                    "fos_user_registration_form[country]": "required",
+                    "fos_user_registration_form[captcha]": "required",
+                    "fos_user_registration_form[terms]": "required"
+                },
+                messages: {
+                    "fos_user_registration_form[username]": {
+                        "required": "Please enter username.",
+                        "minlength": "Your username must have minimum 6 characters.",
+                        "maxlength": "Your username can have maximum 18 characters.",
+                        "regex": "Username can contains character, number and special chars like -_!#$"
+                    },
+                    "fos_user_registration_form[email][first]": {
+                        "required": "Please enter email address.",
+                        "email": "Please enter valid email."
+                    },
+                    "fos_user_registration_form[email][second]": {
+                        "required": "Please enter confirm email address.",
+                        "email": "Please enter valid email."
+                    },
+                    "fos_user_registration_form[plainPassword][first]": {
+                        "required": "Please enter password.",
+                        "minlength": "Your password must have minimum 8 characters.",
+                        "maxlength": "Your password can have maximum 18 characters.",
+                        "regex": "Password can contains characters, numbers and special chars like !@#$_"
+                    },
+                    "fos_user_registration_form[plainPassword][second]": {
+                        "required": "Please enter confirm password.",
+                        "equalTo": "Password does not match the confirm password."
+                    },
+                    "fos_user_registration_form[firstname]": "Please enter first name.",
+                    "fos_user_registration_form[lastname]": "Please enter last name.",
+                    "fos_user_registration_form[address]": "Please enter address.",
+                    "fos_user_registration_form[city]": "Please enter city.",
+                    "fos_user_registration_form[state]": "Please enter state.",
+                    "fos_user_registration_form[zip]": "Please enter zip code.",
+                    "fos_user_registration_form[country]": "Please enter country.",
+                    "fos_user_registration_form[captcha]": "Please enter captcha.",
+                    "fos_user_registration_form[terms]": "Please agree terms of service."
+                }
+            });
+        });
+    </script>
+
+{% endblock javascripts %}

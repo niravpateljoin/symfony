@@ -1,0 +1,242 @@
+{#% extends "LostUserBundle::layout.html.twig" %#}
+{% form_theme form 'LostUserBundle::captcha.html.twig' %}
+{% block body %}
+            {% include "LostUserBundle::flashMessage.html.twig" %}            
+            <div style="clear:both;"></div>
+            <div id="support_msg"></div>
+            <ul class="contactForm">
+                <form action="{{ path('lost_user_support') }}" {{ form_enctype(form) }} method="POST" class="fos_user_registration_register" id="support_form" novalidate>
+                    
+                    <li class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+                        {{ form_widget(form.firstname, { 'attr': {'class': 'pull-left', 'data-prompt-position': 'topRight', 'placeholder': 'First Name'}}) }}
+                        <label id="form_firstname-error" class="error" for="form_firstname"></label>                        
+                    </li>
+                    <li class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+                        {{ form_widget(form.lastname, { 'attr': {'class': 'pull-right', 'data-prompt-position': 'topRight', 'placeholder': 'Last Name'}}) }}
+                        <label id="form_lastname-error" class="error" for="form_lastname"></label>                        
+                    </li>
+                    
+                    <li class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+                        {{ form_widget(form.email, { 'attr': {'class': 'pull-left', 'data-prompt-position': 'topRight', 'placeholder': 'Email'}}) }}
+                        <label id="form_email-error" class="error" for="form_email"></label>                        
+                    </li>
+                    <li class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+                        {{ form_widget(form.number, { 'attr': {'class': 'pull-right', 'data-prompt-position': 'topRight', 'placeholder': 'Telephone/Mobile Number'}}) }}
+                        <label id="form_number-error" class="error" for="form_number"></label>                        
+                    </li>
+                                        
+                    <li class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+                        {{ form_widget(form.category, { 'attr': {'class': 'pull-left', 'data-prompt-position': 'topRight'}}) }}
+                        <label id="form_category-error" class="error" for="form_category"></label>                        
+                    </li>
+                    <li class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+                        {{ form_widget(form.services, { 'attr': {'class': 'pull-right', 'data-prompt-position': 'topRight'}}) }}
+                        <label id="form_provider-error" class="error" for="form_provider"></label>
+                    </li>
+                    <li class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+                        <div class="col-xs-12 inputfield">
+                        	<div class="row">
+		                        {{ form_widget(form.location, { 'attr': {'class': 'pull-right', 'data-prompt-position': 'topRight'}}) }}
+		                        <label id="form_location-error" class="error" for="form_location"></label>
+	                        </div>
+                        </div>
+                        <div class="col-xs-12 inputfield">
+                        	<div class="row">
+		                        {{ form_widget(form.time, { 'attr': {'class': 'pull-left', 'data-prompt-position': 'topRight', 'placeholder': 'Time Available'}}) }}
+                        		<label id="form_time-error" class="error" for="form_time"></label>
+	                        </div>
+                        </div>
+                        {% if (app.environment != 'test') %}
+                        <div class="col-xs-12 inputfield">
+                        	<div class="row">
+		                        <img src="{{ form.captcha.vars.captcha_code }}" title="captcha" />     
+                                <input type="text" placeholder="Captcha" data-prompt-position="topRight" autocorrect="off" autocapitalize="off" class="pull-right" required="required" name="form[captcha]" id="form_captcha" aria-required="true">            
+                                <label id="form_captcha-error" class="error clearfix" for="form_captcha"></label>
+	                        </div>
+                        </div>
+                        {% endif %}
+                        
+                    </li>
+                    <li class="col-xs-12 col-sm-6 col-md-4 col-lg-8">
+                        {{ form_widget(form.message, { 'attr': {'class': 'pull-right', 'data-prompt-position': 'topRight', 'placeholder': 'Message'}}) }}
+                        <label id="form_message-error" class="error" for="form_message"></label>
+                    </li>
+                                        
+                    {{ form_row(form._token) }}
+                    <li class="submit subjectSubmit col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+                        <input type="submit" name="add_support" value="Submit" class="submitBtn"/>
+                    </li>
+                </form>
+            </ul>
+
+<div id="ajax-loader-bx" style="display:none;">
+	<img id="loading" src="{{ asset('bundles/Lostuser/images/ajax_loader1.gif') }}"><br/>
+	<div id="loader-text">Please wait....</div>
+</div>
+        
+{% endblock %}
+
+{% block javascripts %}
+
+<script src="{{ asset('bundles/Lostuser/js/jquery-2.1.1.min.js') }}"></script>
+<script src="{{ asset('bundles/Lostuser/js/jquery.validation.min.js') }}"></script>
+{#{ parent() }#}
+
+<script type="text/javascript">
+function reloadCaptcha(){
+	{#srcss = '{{ form.captcha.vars.captcha_code }}?n=' + (new Date()).getTime();
+	$("img[title=captcha]").attr('src',srcss);	#}
+}
+
+    $(document).ready(function() {
+
+        $('#support_form').validate({
+            rules: {
+                "form[firstname]": {
+                    "required": true                    
+                },
+                "form[lastname]": {
+                    "required": true
+                },
+                "form[email]": {
+                    "required": true,
+                    "email": true
+                },
+                "form[number]": {
+                    "required": true
+                },
+                "form[category]": {
+                    "required": true
+                },
+                "form[services]": {
+                    "required": true
+                },
+                "form[time]": {
+                    "required": true
+                },
+                "form[message]": {
+                    "required": true
+                },
+                "form[captcha]": {
+                    "required": true
+                },
+                "form[location]" : {
+                    "required": true
+                }
+            },
+            messages: {
+            	"form[firstname]": {
+            		"required": "Please enter first name.",
+                },
+                "form[lastname]": {
+                	"required": "Please enter last name.",
+                },
+                "form[email]": {
+                	"required": "Please enter email.",
+                    "email": "Please enter valid email address."
+                },
+                "form[number]": {
+                	"required": "Please enter telephone or mobile number.",
+                },
+                "form[category]": {
+                	"required": "Please select support category.",
+                },
+                "form[services]": {
+                	"required": "Please select service.",
+                },
+                "form[time]": {
+                	"required": "Please enter time avilable.",
+                },
+                "form[message]": {
+                	"required": "Please enter message.",
+                },
+                "form[captcha]": {
+                	"required": "Please enter captcha code.",
+                },
+                "form[location]" : {
+                    "required": "Please select location"
+                }
+            },
+            submitHandler: function(form) {
+            	submitSupportForm();
+            	return false;
+            }
+        });
+        
+    });
+
+    function submitSupportForm(){
+    	
+    	var postData = $('#support_form').serializeArray();
+    	$.ajax({
+    		type: "POST",
+    		url: '{{ path('lost_user_support') }}',
+    		data: postData,	
+    		beforeSend: function( xhr ) {
+    			$('#loader-text').html('Please wait mail sending in process.......');
+				$('#ajax-loader-bx').show();
+    		},
+    		success:function(result){
+    			
+    			var msg = '';
+    			var msghtml = '';
+    			var obj = jQuery.parseJSON( result );
+    			
+    			if(obj['process'] == 'Failed'){
+    				
+    				$.each(obj['error'], function(k, v) {
+    					//display the key and value pair
+    					
+    					$.each(v, function(key, val) {
+    						
+    						$('#form_'+key+'-error').html(val);
+    						$('#form_'+key+'-error').show();
+    					});
+    				    
+    				});	
+    			}else if(obj['process'] == 'Success'){
+    				
+    				if(obj['mailSend'] == 'Success'){
+    					
+    					msg = 'Your support request has been sent successfully. we will reach you soon!';
+    					msgtype = 'success';
+    					
+    					document.getElementById("support_form").reset();    					
+    					
+    				}
+    				
+					if(obj['mailSend'] == 'Failed'){
+    				
+						msg = 'Your support request mail sending failed. please try after sometime.';
+	    				msgtype = 'danger';	
+    				}
+    				
+    			}else{
+    				
+    				msg = 'Something went wrong. please try again later.';
+    				msgtype = 'danger';
+    			}
+    			
+    			$('#support_msg').html('');
+    			
+    			if(msg){
+    				msghtml += '<div class="alert alert-'+msgtype+'">';
+    					msghtml += '<button type="button" class="close" data-dismiss="alert">×</button>';
+    					msghtml += msg;
+					msghtml += '</div>';
+					
+    			}
+    			
+				$('#ajax-loader-bx').hide();
+				$('#support_msg').html(msghtml);
+				
+				reloadCaptcha();
+    		}
+    	});
+    }
+    
+    
+</script>
+
+{% endblock javascripts %}    
+

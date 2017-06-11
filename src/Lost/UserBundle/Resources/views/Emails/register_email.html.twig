@@ -1,0 +1,9 @@
+<p>Hello {{ user.name }},<p>
+<br />
+Thank you for registering with Lost Telecom Portal!  To verify your email address, please click the link below:
+<br /><br />
+<a href="{{ url('fos_user_registration_confirm', {'token': token}) }}">{{ url('fos_user_registration_confirm', {'token': token}) }}</a>
+<br /><br />
+Thank you,
+<br /><br />
+Lost Telecom Group

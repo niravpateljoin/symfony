@@ -1,0 +1,19 @@
+{% extends "LostUserBundle::layout.html.twig" %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+{% block body %}
+    <div class="innerBg">
+        <div class="container min_cont_hight">
+            <div class="row">
+                {% block fos_user_content %}
+                    <div class="msgBox verif_succ_box">
+                        <div class="msgboxin">
+                            <p>Congratulations, Your email is verified successfully.</p>
+                            <p>Now you can <a href="{{ url('fos_user_security_login') }}">signin</a> here!</p>
+                        </div>
+                    </div>
+                {% endblock fos_user_content %}
+            </div>
+        </div>
+    </div>
+{% endblock body %}

@@ -1,0 +1,605 @@
+{% extends "LostUserBundle::layout.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+<link href="{{ asset('bundles/lostadmin/css/jquery-ui-1.10.3.custom.min.css') }}" rel="stylesheet">
+<style type="text/css">
+    .ui-datepicker-trigger { float: right;  margin-right: -20px; margin-top: -24px; }
+    .error{margin-left: 15px;}
+</style>
+{% endblock stylesheets %}
+
+{% block body %}
+{% block fos_user_content %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+<div class="loginBg">
+    <div class="accountSetting">
+        <div class="col-sm-12 col-lg-12 accountsTab">
+            <div class="row">
+
+                <div id="sessionFlash">
+
+                </div>
+
+                {% if app.user.getUserType() == "US Military" and app.user.getIsDeersAuthenticated() != 1  %}
+                <div class="alert alert-info" role="alert">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    In order to complete your registration process, You have to do DEERS authentication. <br> Please <a href="javascript:void(0);" data-toggle="modal" data-target="#deersModal" >Click Here</a> to do DEERS authentication. 
+                </div>
+                {% endif %}
+
+                <ul class="nav nav-tabs col-lg-12" role="tablist">
+                    <li role="presentation" {% if tab == 1 %}class="active"{% endif %}><a href="#updateAccount" aria-controls="connectTab" role="tab" data-toggle="tab"><i class="tabSelectIcon"></i>Update Account</a></li>
+                    <li role="presentation" {% if tab == 2 %}class="active"{% endif %}><a href="#changePassword" aria-controls="changePassword" role="tab" data-toggle="tab"><i class="tabSelectIcon"></i>Change Password</a></li>
+                    <li role="presentation" {% if tab == 3 %}class="active"{% endif %}><a href="#accountSetting" aria-controls="accountSetting" role="tab" data-toggle="tab"><i class="tabSelectIcon"></i>Settings</a></li>
+                </ul>
+
+                <div class="tab-content col-lg-12">
+                    <div role="tabpanel" class="tab-pane fade {{ tab == 1 ? 'in active': ''}}" id="updateAccount">
+                        <div class="accountForm">
+                            {% if tab == 1 %}
+                                {% include "LostUserBundle::flashMessage.html.twig" %}
+                            {% endif %}
+                            <h1>Update Account</h1>
+                            <ul>
+                                <form action="{{ path('lost_user_profile') }}" {{ form_enctype(form) }} method="POST" class="fos_user_profile_edit" id="fos_user_profile_edit" novalidate>
+
+                                    <li>
+                                        {{ form_widget(form.username, { 'attr': {'class': 'form-control pull-left', 'data-prompt-position': 'topRight', 'placeholder': 'Username'}}) }}
+                                        {% if form_errors(form.username) %}
+                                        <div class="serverError">{{ form_errors(form.username) }}</div>
+                                        {% endif %}
+                                    </li>
+                                    <li>
+                                        {{ form_widget(form.email.first, { 'attr': {'class': 'pull-right', 'data-prompt-position': 'topRight', 'placeholder': 'Email'}}) }}
+                                        {% if form_errors(form.email.first) %}
+                                        <div class="serverError">{{ form_errors(form.email.first) }}</div>
+                                        {% endif %}                                        
+                                    </li>
+                                    <li>
+                                        {{ form_widget(form.email.second, { 'attr': {'class': 'pull-left', 'data-prompt-position': 'topRight', 'placeholder': 'Confirm Email'}}) }}
+                                        {% if form_errors(form.email.second) %}
+                                        <div class="serverError">{{ form_errors(form.email.second) }}</div>
+                                        {% endif %}                                        
+                                    </li>
+
+                                    <li>
+                                        {{ form_widget(form.firstname, { 'attr': {'class': 'pull-right', 'data-prompt-position': 'topRight', 'placeholder': 'Firstname'}}) }}
+                                        {% if form_errors(form.firstname) %}
+                                        <div class="serverError">{{ form_errors(form.firstname) }}</div>
+                                        {% endif %}
+                                    </li>
+                                    <li>
+                                        {{ form_widget(form.lastname, { 'attr': {'class': 'pull-left', 'data-prompt-position': 'topRight', 'placeholder': 'Lastname'}}) }}
+                                        {% if form_errors(form.lastname) %}
+                                        <div class="serverError">{{ form_errors(form.lastname) }}</div>
+                                        {% endif %}
+                                    </li>
+                                    <li>
+                                        {{ form_widget(form.address, { 'attr': {'class': 'pull-right', 'data-prompt-position': 'topRight', 'placeholder': 'Address'}}) }}
+                                        {% if form_errors(form.address) %}
+                                        <div class="serverError">{{ form_errors(form.address) }}</div>
+                                        {% endif %}
+
+                                    </li>
+                                    <li>
+                                        {{ form_widget(form.city, { 'attr': {'class': 'pull-left', 'data-prompt-position': 'topRight', 'placeholder': 'City'}}) }}
+                                        {% if form_errors(form.city) %}
+                                        <div class="serverError">{{ form_errors(form.city) }}</div>
+                                        {% endif %}
+
+                                    </li>
+                                    <li>
+                                        {{ form_widget(form.state, { 'attr': {'class': 'pull-right', 'data-prompt-position': 'topRight', 'placeholder': 'State'}}) }}
+                                        {% if form_errors(form.state) %}
+                                        <div class="serverError">{{ form_errors(form.state) }}</div>
+                                        {% endif %}
+                                    </li>
+                                    <li>
+                                        {{ form_widget(form.zip, { 'attr': {'class': 'pull-left', 'data-prompt-position': 'topRight', 'placeholder': 'Zip Code'}}) }}
+                                        {% if form_errors(form.zip) %}
+                                        <div class="serverError">{{ form_errors(form.zip) }}</div>
+                                        {% endif %}
+                                    </li>
+                                    <li>
+                                        {{ form_widget(form.country, { 'attr': {'class': 'pull-right', 'data-prompt-position': 'topRight', 'placeholder': 'Country'}}) }}
+                                        {% if form_errors(form.country) %}
+                                        <div class="serverError">{{ form_errors(form.country) }}</div>
+                                        {% endif %}
+                                    </li>
+                                    {{ form_rest(form) }}
+                                    <li class="submit"><input name="update_email" type="submit" value="Update Account" class="submitBtn"></li>
+                                </form>
+                            </ul>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade {{ tab == 2 ? 'in active': ''}}" id="changePassword">
+                        <div class="accountForm">
+                            {% if tab == 2 %}
+                                {% include "LostUserBundle::flashMessage.html.twig" %}
+                            {% endif %}
+                            <h1>Change Password</h1>
+                            <ul>
+                                <form action="{{ path('lost_user_profile') }}" {{ form_enctype(changePasswordForm) }} method="POST" class="fos_user_profile_edit" id="fos_user_change_password">
+
+                                    <li class="fullWidth">
+                                        
+                                        {{ form_widget(changePasswordForm.current_password, { 'attr': {'data-prompt-position': 'topRight', 'placeholder': 'Current Password'}}) }}
+                                        {% if form_errors(changePasswordForm.current_password) %}
+                                        <div class="serverError">
+                                            {% autoescape %}
+                                            <ul><li>Password does not match to current password.</li></ul>
+                                            {% endautoescape %}
+                                            {#{{form_errors(changePasswordForm.current_password)}}#}
+                                        </div>
+                                        {% endif %}
+                                    </li>
+
+                                    <li>
+                                        {% if form_errors(changePasswordForm.plainPassword.first) %}
+                                        <div class="serverError">{{ form_errors(changePasswordForm.plainPassword.first) }}</div>
+                                        {% endif %}
+                                        {{ form_widget(changePasswordForm.plainPassword.first, { 'attr': {'class': 'pull-left', 'data-prompt-position': 'topRight', 'placeholder': 'New Password'}}) }}
+                                    </li>
+
+                                    <li>
+                                        {% if form_errors(changePasswordForm.plainPassword.second) %}
+                                        <div class="serverError">{{ form_errors(changePasswordForm.plainPassword.second) }}</div>
+                                        {% endif %}
+                                        {{ form_widget(changePasswordForm.plainPassword.second, { 'attr': {'class': 'pull-right', 'data-prompt-position': 'topRight', 'placeholder': 'Confirm Password'}}) }}
+                                    </li>
+
+                                    {{ form_rest(changePasswordForm) }}
+                                    <li class="submit"><input type="submit" name="update_password" value="Update Password" id="update_password" class="submitBtn"></li>
+                                </form>
+                            </ul>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade {{ tab == 3 ? 'in active': ''}}" id="accountSetting">
+
+                        <div class="accountForm account_setting">
+                            <h1>Settings</h1>
+                            
+                            <ul class="mac_title">
+                                <li class="pull-left" id="title-mac-address"><h2>Set Top Box Mac Address</h2><span>&nbsp;(Maximum: {{app.session.get('maxMacAddress')}})</span></li>
+                                <li class="pull-right add_mac_address submit">
+                                        {% if app.session.get('maxMacAddress') > userMacAddress|length %}
+                                    <a href="javascript:void(0);" id="add-mac-address" class="submitBtn">Add Mac Address</a>
+                                        {% endif%}
+                                </li>
+                            </ul>
+
+                            <div id="flash-message"></div>
+
+                            <ul id="form-body" class="use_mac_add_list"> </ul>
+
+
+
+                            <div class="tab-content col-lg-12" id="mac-address-list">
+
+                            {{ include('LostUserBundle:UserMacAddress:list.html.twig', {'userMacAddress': userMacAddress}) }}
+
+                            </div>
+
+                        </div>                        
+
+                        <div class="accountForm setting">
+                            <div id="flash-message"></div>
+                            {% if tab == 3 %}
+                                {% include "LostUserBundle::flashMessage.html.twig" %}
+                            {% endif %}
+                            <h2>Other Settings</h2>
+                            <ul class="setting_list">
+                                <form action="{{ path('lost_user_profile') }}" {{ form_enctype(accountSettingForm) }} method="POST" class="fos_user_profile_edit">
+                                    {% if form_errors(accountSettingForm) %}
+                                    <li>{{ form_errors(accountSettingForm) }}</li>
+                                    {% endif %}
+                                    <li class="check_box">{{ form_widget(accountSettingForm.is_email_optout, { 'attr': {'data-prompt-position': 'topRight'}}) }}Opt Out of Marketing Emails</li>
+                                    {{ form_rest(accountSettingForm) }}
+                                    <li class="submit"><input type="submit" name="update_setting" value="Update Settings" class="submitBtn"></li>
+                                </form>
+
+                            </ul>
+                            
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock fos_user_content %}
+<!-- Modal -->
+<div class="modal fade" id="deersModal" tabindex="-1" role="dialog" aria-labelledby="deersModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Deers Authentication</h4>
+            </div>
+            <div class="modal-body">
+                <p> For US Military personal, Deers authentication is required. For Deers authenticaiton you must have www.shopmyexchange.com account.Please <a href="{{ path('lost_user_deers_auth') }}">Click Here</a> if you have www.shopmyexchange.com account.</p>
+                <p class="text-center"> OR </p>
+                <p> Please <a href="https://www.shopmyexchange.com/account/register">Click Here</a> if you want to create new account on <a href="https://www.shopmyexchange.com/account/register">www.shopmyexchange.com.</a> </p>    
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock body %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+
+        // render form to add mac address
+        $("#add-mac-address").live("click", function() {
+
+            $.ajax({
+                type: "POST",
+                url: '{{ path('lost_user_mac_address_add') }}',
+                success: function(result)
+                {
+                    if (result) {
+
+                        $("#form-body").show();
+                        $("#form-body").html(result);
+                        return true;
+                    }
+
+                }
+            });
+
+        });
+
+        // delete mac address
+        $("[id^=delete-mac-address]").live("click", function() {
+
+            var id = $(this).attr('data');
+            if (confirm("Are you sure you want to delete this mac address?")) {
+
+                if (id) {
+
+                    var deleteUrl = '{{path('lost_user_mac_address_remove', {'id' : 'macId'})}}';
+                    deleteUrl = deleteUrl.replace('macId', id);
+
+                    $.ajax({
+                        type: "POST",
+                        url: deleteUrl,
+                        success: function(result)
+                        {
+
+                            var flagMacAddress = jQuery.parseJSON(result);
+
+                            if (flagMacAddress['status'] != 'failure') {
+
+                                if ('{{app.session.get('maxMacAddress')}}' > flagMacAddress['totalMacAddress']) {
+
+                                    $("#add-mac-address").show();
+
+                                }
+
+                                flashMsg = disErrorMsg('success', 'Mac address deleted successfully.');
+                                $("#flash-message").html(flashMsg);
+
+                                $("#mac-address-list").html(flagMacAddress['status']);
+                                return true;
+
+                            }
+
+                        }
+                    });
+
+                }
+            }
+
+        });
+
+        // edit mac address
+        $("[id^=edit-mac-address]").live("click", function() {
+
+            var id = $(this).attr('data');
+
+            if (id) {
+
+                var editUrl = '{{path('lost_user_mac_address_edit', {'id' : 'macId'})}}';
+                editUrl = editUrl.replace('macId', id);
+
+                $.ajax({
+                    type: "POST",
+                    url: editUrl,
+                    success: function(result)
+                    {
+                        if (result) {
+
+                            $("#form-body").show();
+                            $("#form-body").html(result);
+                            return true;
+                        }
+
+                    }
+                });
+
+            }
+
+        });
+
+        // add mac address 
+        $("#submitAddMacAddress").live("click", function() {
+
+            if ($("#addMacAddress").valid()) {
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{path('lost_user_mac_address')}}",
+                    data: $("#addMacAddress").serialize(),
+                    success: function(result)
+                    {
+                        var flagArr = jQuery.parseJSON(result);
+
+                        if (flagArr) {
+
+                            if (flagArr['error'])
+                            {
+
+                                $("#form-body").show();
+                                $("#form-body").html(flagArr['error']);
+
+                            }
+                            else {
+
+                                flashMsg = disErrorMsg('success', 'Mac address added successfully.');
+                                $("#flash-message").html(flashMsg);
+
+                                $("#lost_user_mac_address_macAddress").val("");
+                                $("#form-body").hide();
+
+                                $.ajax({
+                                    type: "POST",
+                                    url: '{{path('lost_user_mac_address_list')}}',
+                                    success: function(result)
+                                    {
+                                        var flagMacAddress = jQuery.parseJSON(result);
+
+                                        if (flagMacAddress['status'] != 'failure') {
+
+                                            if (flagMacAddress['totalMacAddress'] > '{{app.session.get('maxMacAddress')}}' || '{{app.session.get('maxMacAddress')}}' == flagMacAddress['totalMacAddress']) {
+
+                                                $("#add-mac-address").hide();
+
+                                            }
+
+                                            $("#mac-address-list").html(flagMacAddress['status']);
+                                            return true;
+
+                                        }
+
+                                    }
+                                });
+
+                            }
+                        }
+
+                    }
+
+                });
+
+
+            }
+            else {
+
+                $(".serverError").hide();
+                $('#lost_user_mac_address_macAddress').rules('add', {
+                    required: true,
+                    messages: {
+                        required: "Please enter mac address.",
+                    }
+                });
+            }
+        });
+
+        // edit mac address 
+        $("#submitEditMacAddress").live("click", function() {
+
+            if ($("#editMacAddress").valid()) {
+
+                id = $("#edit-id").val();
+
+                var editUrl = "{{path('lost_user_mac_address', {'id' : 'userMacId'})}}";
+
+                url = editUrl.replace("userMacId", id);
+
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: $("#editMacAddress").serialize(),
+                    success: function(result)
+                    {
+
+                        var flagArr = jQuery.parseJSON(result);
+
+                        if (flagArr['status'] == 'failure' && !flagArr['error'])
+                        {
+                            return false;
+                        }
+                        else if (flagArr['error'])
+                        {
+
+                            $("#form-body").show();
+                            $("#form-body").html(flagArr['error']);
+
+                        }
+                        else {
+
+                            flashMsg = disErrorMsg('success', 'Mac address updated successfully.');
+                            $("#flash-message").html(flashMsg);
+
+                            $("#lost_user_mac_address_macAddress").val("");
+                            $("#form-body").hide();
+
+                            $.ajax({
+                                type: "POST",
+                                url: '{{path('lost_user_mac_address_list')}}',
+                                success: function(result)
+                                {
+
+                                    var flagMacAddress = jQuery.parseJSON(result);
+
+
+                                    if (flagMacAddress['status'] != 'failure') {
+
+                                        if (flagMacAddress['totalMacAddress'] > '{{app.session.get('maxMacAddress')}}' || '{{app.session.get('maxMacAddress')}}' == flagMacAddress['totalMacAddress']) {
+
+                                            $("#add-mac-address").hide();
+
+                                        }
+
+                                        $("#mac-address-list").html(flagMacAddress['status']);
+                                        return true;
+
+                                    }
+
+
+                                }
+                            });
+
+                        }
+
+                    }
+
+                });
+
+            }
+            else {
+
+                $(".serverError").hide();
+                $('#lost_user_mac_address_macAddress').rules('add', {
+                    required: true,
+                    messages: {
+                        required: "Please enter mac address.",
+                    }
+                });
+            }
+
+        });
+
+        $('ul[role="tablist"] li').not('.active').click(function() {
+            $('label.error').hide();
+            $('.serverError').html('');
+        });
+
+        $("#fos_user_profile_edit").submit(function() {
+            if (!$(this).valid()) {
+                ($('#lost_user_account_update_username').val());
+                return false;
+            }
+        }).validate({
+            rules: {
+                "lost_user_account_update[email][first]": {
+                    "required": true,
+                    "email": true
+                },
+                "lost_user_account_update[email][second]": {
+                    "required": true,
+                    "equalTo": "#lost_user_account_update_email_first"
+                },
+                "lost_user_account_update[firstname]": "required",
+                "lost_user_account_update[lastname]": "required",
+                "lost_user_account_update[address]": "required",
+                "lost_user_account_update[city]": "required",
+                "lost_user_account_update[state]": "required",
+                "lost_user_account_update[zip]": "required",
+                "lost_user_account_update[country]": "required"
+            },
+            messages: {
+                "lost_user_account_update[email][first]": {
+                    "required": "Please enter email.",
+                    "email": "Please enter valid email."
+                },
+                "lost_user_account_update[email][second]": {
+                    "required": "Please enter confirm email.",
+                    "equalTo": "Email does not match confirm email."
+                },
+                "lost_user_account_update[firstname]": "Please enter first name.",
+                "lost_user_account_update[lastname]": "Please enter last name.",
+                "lost_user_account_update[address]": "Please enter address.",
+                "lost_user_account_update[city]": "Please enter city.",
+                "lost_user_account_update[state]": "Please enter state.",
+                "lost_user_account_update[zip]": "Please enter zip code.",
+                "lost_user_account_update[country]": "Please enter country."
+               
+        }
+        });
+
+        $.validator.addMethod("regex", function(value, element, regexpr) {
+            return regexpr.test(value);
+        }, "Username can contains character, number and special chars like -_!#$.");
+
+        
+        $("#update_password").live("click", function() {
+            
+             if(!$("#fos_user_change_password").valid())
+             {
+                 $('.serverError').html('');
+             }   
+             
+        });
+        
+        $('#fos_user_change_password').validate({
+            rules: {
+                "lost_user_changepassword[current_password]": {
+                    "required": true
+                },
+                "lost_user_changepassword[plainPassword][first]": {
+                    "required": true,
+                    "regex": /^[A-Za-z0-9!@#$_]+$/,
+                    "minlength": 8,
+                    "maxlength": 18
+                },
+                "lost_user_changepassword[plainPassword][second]": {
+                    "required": true,
+                    "equalTo": "#lost_user_changepassword_plainPassword_first"
+                }
+            },
+            messages: {
+                "lost_user_changepassword[current_password]": {
+                    "required": "Please enter current password."
+                },
+                "lost_user_changepassword[plainPassword][first]": {
+                    "required": "Please enter new password.",
+                    "minlength": "Your password must have minimum 8 characters.",
+                    "maxlength": "Your password can have maximum 18 characters.",
+                    "regex": "Password can contains characters, numbers and special chars like !@#$_"
+                },
+                "lost_user_changepassword[plainPassword][second]": {
+                    "required": "Please enter confirm password.",
+                    "equalTo": "Password does not match the confirm password."
+                }
+            }
+        });
+    });
+
+
+    function disErrorMsg(msgType, msg) {
+
+        var html = '';
+        html += '<div class="alert alert-' + msgType + '">';
+        html += '<button type="button" class="close" data-dismiss="alert">&times;</button>';
+        html += msg
+        html += '</div>';
+        return html;
+    }
+
+</script>
+
+{% endblock javascripts %}

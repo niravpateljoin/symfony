@@ -1,0 +1,96 @@
+{% block body %}
+{% set subTotalIPTV = 0 %}
+{% set subTotalISP = 0 %}
+<div class="rcolcont">
+	{% if 'IPTV' in summaryData.AvailableServicesOnLocation %}
+	<div class="botcolcont">
+		<div class="titbar">
+			<h2>IPTV Service</h2>
+			<span class="botArw">&nbsp;</span>
+		</div>
+		{% if summaryData.IsIPTVAvailabledInPurchased == 1 %}
+		<div class="inncont">
+			<div class="fildblk toprow">
+				<span class="pull-left">IPTV Package</span><span class="pull-right">Price</span>
+			</div>
+			{% if summaryData.Purchased.IPTV.RegularPack %}
+				{% for iptvPackage in summaryData.Purchased.IPTV.RegularPack %}
+					<div class="fildblk">
+						<span class="pull-left">{{ iptvPackage.packageName }}</span> 
+						<span class="pull-right">${{ iptvPackage.amount }}</span>
+					</div>
+					{% set subTotalIPTV = subTotalIPTV + iptvPackage.amount %}
+				{% endfor %}
+			{% endif %}
+			
+			{% if summaryData.IsAddOnAvailabledInPurchased == 1 %}
+			<div class="fildblk toprow">
+				<span class="pull-left">Premium Package</span><span
+					class="pull-right">Price</span>
+			</div>
+				{% for addOnPackage in summaryData.Purchased.IPTV.AddOnPack %}
+				<div class="fildblk">
+					<span class="pull-left">{{ addOnPackage.packageName }}</span> 
+					<span class="pull-right">${{ addOnPackage.amount }}</span>
+				</div>
+				{% set subTotalIPTV = subTotalIPTV + addOnPackage.amount %}
+				{% endfor %}
+			{% endif %}
+			<div class="fildblk botrow">
+				<span class="pull-left"> <strong>IPTV Subtotal</strong></span> 
+				<span class="pull-right"><strong>${{ subTotalIPTV|number_format(2) }}</strong></span>
+			</div>
+		</div>
+		{% else %}
+		<div class="fildblk text-center">
+			<span>No package found</span>
+		</div>
+		{% endif %}
+	</div>
+	{% endif %}
+	{% if 'ISP' in summaryData.AvailableServicesOnLocation %}
+	<div class="botcolcont">
+		<div class="titbar">
+			<h2>Internet Service</h2>
+			<span class="botArw">&nbsp;</span>
+		</div>
+		{% if summaryData.IsISPAvailabledInPurchased == 1 %}
+		<div class="inncont">
+			<div class="fildblk toprow">
+				<span class="pull-left">Package</span><span class="pull-right">Price</span>
+			</div>
+			{% if summaryData.Purchased.ISP.RegularPack %}
+				{% for ispPackage in summaryData.Purchased.ISP.RegularPack %}
+					<div class="fildblk">
+						<span class="pull-left">{{ ispPackage.packageName }}</span> 
+						<span class="pull-right">${{ ispPackage.amount }}</span>
+					</div>
+					{% set subTotalISP = subTotalISP + ispPackage.amount %}
+				{% endfor %}
+			{% endif %}
+			<div class="fildblk botrow">
+				<span class="pull-left"> <strong>Internet Subtotal</strong></span> 
+				<span class="pull-right"><strong>${{ subTotalISP|number_format(2) }}</strong></span>
+			</div>
+		</div>
+		{% else %}
+		<div class="fildblk text-center">
+			<span>No package found</span>
+		</div>
+		{% endif %}
+				
+	</div>
+	{% endif %}
+	<div class="botcolcont">
+		<div class="coltitbar">
+			<h2>Order Summary</h2>
+		</div>
+		<div class="inncont borderbot">
+			<div class="fildblk botrow">
+				<span class="pull-left"><strong>Current Monthly total</strong></span> 
+				<span class="pull-right"><strong>${{ summaryData.TotalPurchasedAmount|number_format(2) }}</strong></span>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock body %}

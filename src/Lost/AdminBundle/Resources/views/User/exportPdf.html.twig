@@ -1,0 +1,59 @@
+{% block body %}
+	<h1>Purchase History</h1>  
+	<table cellspacing="0" cellpadding="5" border="1" class="purchase_table">
+		<tr class="head">
+			<th>Order Number</th>
+			<th>Username</th>
+            <th>Service</th>
+            <th>Package</th>
+            <th>Paid Amount($)</th>
+            <th>Payment Method</th>
+            <th>Transaction ID</th>
+            <th>Payment Status</th>
+            <th>Compensation Validity</th>
+            <th>Purchase Date</th>
+		</tr>
+		{% set i = 0 %}
+	    {% if (purchaseData | length) %} 
+            {% for record in purchaseData %}
+            	{% set trcls = 'oddrow' %}
+            	{% if i % 2 != 0 %}
+            		{% set trcls = 'evenrow' %}
+            	{% endif %}
+                <tr class="{{ trcls }}">
+                    
+                    {% set serviceStatus = '' %}
+                        
+                    {% set amount = '' %}
+                    {% if record.userService %}
+                    	{% set amount = record.userService.payableAmount %}
+                    {% endif %}
+                    <td>
+                         {% if record.purchaseOrder %}
+                           {{ record.purchaseOrder.orderNumber ? record.purchaseOrder.orderNumber : '' }}
+                         {% endif %}
+                    </td>                    
+                    <td>{{ record.user ? record.user.username : '' }}</td>
+					<td>{{ record.service ? record.service.name : '' }}</td>
+                    <td>{{ record.packageName }}</td>
+                    <td>{{ amount }}</td>
+                    <td>
+                         {% if record.purchaseOrder %}
+                            {% if record.purchaseOrder.paypalCheckout %}{{ record.purchaseOrder.paymentMethod.name }}{% endif %}
+                         {% endif %}   
+                    </td>
+                    <td>{% if (record.purchaseOrder is not null and record.purchaseOrder.paypalCheckout is not null) %}{{ record.purchaseOrder.paypalCheckout.paypalTransactionId }}{% endif %}</td>
+                    <td>
+                        {% if record.purchaseOrder %}    
+                            {{ record.purchaseOrder.compensationValidity ? record.purchaseOrder.compensationValidity~'hours' : '' }}
+                        {% endif %}
+                    </td>
+                    <td>{% if (record.purchaseOrder is not null) %}{{ record.purchaseOrder.createdAt|date('M-d-Y H:i:s') }}{% endif %}</td>                                        
+                </tr>
+                {% set i = i+1 %}
+            {% endfor %}
+        {% else %}
+            <tr><td colspan="9" align="center">No records found.</td></tr>
+        {% endif %}	
+	</table>	
+{% endblock body %}

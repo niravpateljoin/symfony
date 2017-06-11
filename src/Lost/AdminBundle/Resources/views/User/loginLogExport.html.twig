@@ -1,0 +1,65 @@
+{% extends "LostUserBundle::layout.html.twig" %}
+
+{% block stylesheets %}
+
+    <link href="{{ asset(app.request.schemeAndHttpHost ~'/bundles/lostadmin/css/jquery-ui-1.10.3.custom.min.css') }}" rel="stylesheet">
+    <link href="{{ asset(app.request.schemeAndHttpHost ~'/bundles/Lostuser/css/bootstrap.css') }}" rel="stylesheet">
+    <link href="{{ asset(app.request.schemeAndHttpHost ~'/bundles/Lostuser/css/bootstrap-theme.min.css') }}" rel="stylesheet">
+    <link href="{{ asset(app.request.schemeAndHttpHost ~'/bundles/Lostuser/css/font-awesome.css') }}" rel="stylesheet">
+    <link href="{{ asset(app.request.schemeAndHttpHost ~'/bundles/Lostuser/css/slick.css') }}" rel="stylesheet">
+    <link href="{{ asset(app.request.schemeAndHttpHost ~'/bundles/Lostuser/css/main.css') }}" rel="stylesheet">
+    <link href="{{ asset(app.request.schemeAndHttpHost ~'/bundles/Lostuser/css/responsive.css') }}" rel="stylesheet">
+    
+    <style type="text/css">
+        header, footer, .LostLogo {display:none !important;}
+        table.records_list th{text-align: left;}
+        tr { page-break-inside: avoid }
+    </style>
+{% endblock %}
+{% block body %}
+    <div class="innerBg" style="border: 0">
+        <div class="container">
+            <div class="row">
+                <div class="pull-left"><a href="{{ url('lost_user_homepage') }}"><img src="{{ asset(app.request.schemeAndHttpHost ~'/bundles/Lostuser/images/Lost-logo.png') }}" width="216" height="52"></a></div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                
+                <h4>User Login Log History</h4>
+                
+                <table class="table table-hover table-bordered records_list">
+                    
+                    <thead>
+                        <tr>
+                            <th width="5%">Id</th>
+                            <th>Name</th>
+                            <th>IP Address</th>
+                            <th>Country</th>
+                            <th>Created</th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody>
+                        {% if (pagination | length) %} 
+                            {% for index, record in pagination %}
+                            <tr>
+                                <td>{{ pagination.getItemNumberPerPage * (pagination.getCurrentPageNumber - 1) + index + 1 }}</td>
+                                <td>{{ record.user.firstname }} {{ record.user.lastname }} </td>
+                                <td>{{ record.ipAddress }}</td>
+                                <td>{{ record.country.name }}</td>
+                                <td>{{ record.createdAt | date('M-d-Y H:i:s') }}</td>
+                            </tr>
+                        {% endfor %}
+                        {% else %}
+                            <td colspan="7" align="center">No records found.</td>
+                        {% endif %}
+                    </tbody>
+                </table>  
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends "LostAdminBundle::layout.html.twig" %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            
+            {% include "LostUserBundle::flashMessage.html.twig" %}
+            <div class="headstyl" style="margin: 10px 0; float: left; width: 100%;">
+            <div class="col-xs-10"><h3 style="line-height: 40px;">Purchase details of user {{ user.username }}</h3></div>
+            <div class="col-xs-2" style="padding-top:6px; text-align: right; "><a href="#" data-toggle="modal" data-target="#AddIptvPackage" class="btn btn-success">Add package</a></div>
+            </div>
+            <div class="col-xs-12">
+            <table class="table table-bordered table-hover">
+                <tr>
+                    <th {% if pagination.isSorted('s.name') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Service', 's.name') }}</th>
+                    <th {% if pagination.isSorted('sp.packageName') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Package', 'sp.packageName') }}</th>
+                    <th {% if pagination.isSorted('us.amount') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Amount', 'us.amount') }}</th>
+                    <th {% if pagination.isSorted('us.status') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Status', 'us.status') }}</th>
+                    <th {% if pagination.isSorted('us.activationDate') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Activation Date', 'us.activationDate') }}</th>
+                    <th {% if pagination.isSorted('us.expiryDate') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Expiration Date', 'us.expiryDate') }}</th>
+                    <th {% if pagination.isSorted('sp.createdAt') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Purchase Date', 'sp.createdAt') }}</th>
+                    <th>Transaction Ref.</th>
+                    
+                    <th>Actions</th>
+                </tr>
+               
+                 {% if(pagination|length > 0) %}
+                            {% for record in pagination %}
+
+                                 <tr>
+                                     <td>{{ record.service.name }}</td>
+                                     <td>{{ record.packageName }}</td>
+                                     <td>{{ record.amount }}</td>
+                                     <td>{{ (record.status == 1) ? 'Active':'Expired' }}</td>
+                                     <td>{{ record.activationDate|date('M-d-Y') }}</td>
+                                     <td>{{ record.expiryDate|date('M-d-Y') }}</td>
+                                     <td>{% if (record.servicePurchases is not null) %}{{ record.servicePurchases.createdAt|date('M-d-Y H:i:s') }}{% endif %}</td>
+                                     <td>{% if (record.servicePurchases is not null and record.servicePurchases.paypalCheckout is not null) %}{{ record.servicePurchases.paypalCheckout.paypalTransactionId }}{% endif %}</td>
+                                     <td>{% if record.status == 1 %}<a href="{{ path('lost_admin_user_remove_iptv_package', {'userId': user.id, 'packageId': record.id})}}" onclick="return confirm('Are you sure want to remove package from the user?')" class="btn btn-default">Remove Package</a>{% endif %}</td>
+                                 </tr>
+                             {% endfor %}
+                   {% else %}
+                        <tr><td colspan="9" align="center">No Record Found!</td></tr>
+                   {% endif %}     
+                 
+                
+                        
+                
+            </table>
+            </div>
+            <div class="navigation pull-right">
+                {{ knp_pagination_render(pagination) }}
+            </div>
+            
+            
+        </div>
+    </div>
+{{ render(controller('LostAdminBundle:User:addIptvPackage', {'userId': user.id} )) }}
+{% endblock %}
+{% block javascripts %}
+{{ parent() }}
+<script language="javascript">
+    $(document).ready(function() {
+        $("[name='package']").prop('checked', false);;
+    });
+    
+    
+    function submitPackage(){
+        var selectedVal = "";
+        var selected = $("input[type='radio'][name='packageId']:checked");
+        if (selected.length > 0) {
+            selectedVal = selected.val();            
+        } else {
+            alert("Please select package.");
+            return false;
+        }
+    
+        var postData = $('#frmAddPackage').serializeArray();
+        //var postData = {'userId': '{{ user.id}}', 'packageId': selectedVal};
+        
+        $.ajax({
+            type: "POST",
+            url: '{{ path('lost_admin_user_save_iptv_package') }}',
+            data: postData,	
+            beforeSend: function( xhr ) {
+                $('#ajax-loader-bx').show();
+            },
+            success:function(result){
+                    //$("#PackageList").html("<h3>"+response['message']+"</h3>");
+                    $('#ajax-loader-bx').hide();
+                    window.location.reload();
+            }
+        });
+    }
+</script>
+{% endblock %}

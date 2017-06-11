@@ -1,0 +1,60 @@
+{% extends "LostUserBundle::layout.html.twig" %}
+{% block body %}
+<div class="innerBg">
+	<div class="container">
+    	<div class="row">
+        	{% include "LostUserBundle::flashMessage.html.twig" %}
+        	
+        	<h3>Thank you for using Lost Portal Services</h3>
+        	<h5>Your transcation has been cancelled. If you have any question or concerns please feel free to contact.</h5>
+        	
+        	{% if purchaseOrder %}
+			<table class="table table-hover records_list">			
+           		<thead>
+					<tr>
+						<th colspan="4">
+							<b>Transaction ID:</b> {{ purchaseOrder.orderNumber }}<br/>
+							<b>Date:</b> {{ purchaseOrder.createdAt|date('Y-m-d H:i:s') }}<br/>
+							{% if purchaseOrder.paymentMethod %}
+							<b>Payment By:</b> {{ purchaseOrder.paymentMethod.name }}<br/>
+							{% endif %}						
+						</th>
+					</tr>
+				</thead>
+					
+				{% if purchaseOrder.servicePurchases %}
+				<tbody>
+					<tr>
+						<td><b>Service</b></td>
+						<td><b>Package</b></td>
+						<td><b>Payment Status</b></td>
+						<td><b>Activation</b></td>
+						<td><b>Amount</b></td>
+					</tr>
+					{% set totamt = 0 %}
+					{% set failAmt = 0 %}
+					{% for purchase in purchaseOrder.servicePurchases %}
+						{% if purchase.rechargeStatus == 2 %}
+							{% set failAmt = failAmt + purchase.payableAmount %}
+						{% endif %}
+						{% set totamt = totamt + purchase.payableAmount %}
+					<tr>
+						<td>{{ purchase.service.name }}</td>
+						<td>{{ purchase.packageName }}</td>
+						<td>{{ purchase.paymentStatus}}</td>
+						<td>{{ purchase.activationStatus}}</td>
+						<td>${{ purchase.payableAmount }}</td>
+					</tr>
+					 {% endfor %}
+					<tr>
+						<td align="right" colspan="4"><b>Total Amount</b></td>
+						<td>${{ (totamt - failAmt)|number_format(2) }}</td>
+					</tr>
+				</tbody>
+				{% endif %}
+			</table>
+			{% endif %}									
+		</div>
+	</div>
+</div>
+{% endblock body %}

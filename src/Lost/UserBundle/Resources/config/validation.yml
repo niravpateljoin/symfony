@@ -1,0 +1,176 @@
+Lost\UserBundle\Entity\User:
+    constraints:
+#        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: email
+#        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: username
+    properties:
+#        email:
+#            - Email:
+#                message: The email "{{ value }}" is not a valid email.
+        username:
+            - Length:
+                min: 6
+                minMessage: "Your username must have minimum {{ limit }} characters."
+                max: 18
+                maxMessage: "Your username can have maximum {{ limit }} characters."
+                groups: [Registration]
+            - Regex:
+                pattern: /^[A-Za-z0-9-_!#$]+$/
+                message: "username can contains character, number and special chars like -_!#$"
+        plainPassword:
+            - Length:
+                min: 8
+                minMessage: "Your password must have minimum {{ limit }} characters."
+                max: 18
+                maxMessage: "Your password can have maximum {{ limit }} characters."
+                groups: [Registration, ResetPassword, ChangePassword]
+            - Regex:
+                pattern: /^[A-Za-z0-9!@#$_]+$/
+                message: "Password can contains characters, numbers and special chars like !@#$_"
+                groups: [Registration, ResetPassword, ChangePassword]
+        firstname:
+           - NotBlank:
+                message: "Please enter first name."
+        lastname:
+           - NotBlank:
+                message: "Please enter last name."
+        address:
+           - NotBlank:
+                message: "Please enter address."
+                groups: [Registration]
+        city:
+           - NotBlank:
+                message: "Please enter city."
+                groups: [Registration]
+        state:
+           - NotBlank:
+                message: "Please enter state."
+                groups: [Registration]
+        zip:
+           - NotBlank:
+                message: "Please enter zip code."
+                groups: [Registration]
+        country:
+           - NotBlank:
+                message: "Please enter country."
+                groups: [Registration]
+#        phone:
+#            - NotBlank:
+#                message: "Please enter phone number."
+#            - Regex:
+#                pattern: /^[0-9+]+$/
+#                message: "Please enter valid phone number."
+                
+
+                
+Lost\UserBundle\Entity\EmailCampaign:
+    properties:
+        subject:
+            - NotBlank:
+                message: "Please enter email subject."
+        message:
+            - NotBlank:
+                message: "Please enter email message."
+        emailType:
+            - NotBlank:
+                message: "Please select email type."
+                
+Lost\UserBundle\Entity\CountrywiseService:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
+            fields: [country, services]
+            message: "Service(s) already added for selected country."
+    properties:
+        status:
+            - NotBlank:
+                message: "Please select status."
+            
+Lost\AdminBundle\Entity\IpAddressZone:
+    properties:
+        fromIpAddress:
+           - NotBlank:
+                message: "Please enter IP From."
+           - Ip:
+               message: "Not a valid IP address."
+            
+        toIpAddress:
+           - NotBlank:
+                message: "Please enter IP To."
+           - Ip:
+               message: "Not a valid IP address."
+               
+Lost\UserBundle\Entity\Service:
+    properties:
+        name:
+           - NotBlank:
+                message: "Please enter service name."
+        status:
+            - NotBlank:
+                message: "Please select status."
+
+Lost\UserBundle\Entity\UserServiceSetting:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
+            fields: [user, service]
+            message: "Service already added for selected user."
+
+Lost\UserBundle\Entity\UserSetting:
+    properties:
+        macAddress:
+            - Length:
+                max: 100
+                maxMessage: "Please enter a value less than or equal to 100.." 
+            - Regex:
+                pattern: /^[0-9+]+$/
+                message: "Please enter valid number."
+                
+        maxDailyTransaction:
+            - Length:
+                max: 100
+                maxMessage: "Please enter a value less than or equal to 100.." 
+            - Regex:
+                pattern: /^[0-9+]+$/
+                message: "Please enter valid number."
+                
+            
+Lost\AdminBundle\Entity\GlobalDiscount:
+    properties:
+        minAmount:
+            - NotBlank:
+                message: "Please enter minimum amount."
+            - Regex:
+                pattern: /^[0-9+]+$/
+                message: "Please enter valid number."
+                
+        maxAmount:
+            - NotBlank:
+                message: "Please enter maximum amount."
+            - Regex:
+                pattern: /^[0-9+]+$/
+                message: "Please enter valid number."
+            
+        percentage:
+            - NotBlank:
+                message: "Please enter percentage."
+            - Regex:
+                pattern: /^[0-9+]+$/
+                message: "Please enter valid number."
+                
+Lost\UserBundle\Entity\UserMacAddress:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
+            fields: [macAddress]
+            message: "Mac address already exists."
+            
+    properties:
+        macAddress:
+           - NotBlank:
+                message: "Please enter mac address."
+           - Regex:
+                pattern: /^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$/
+                message: "Please enter valid mac address example: 48:51:B7:F2:67:82"     
+ 
+Lost\UserBundle\Entity\Group:     
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
+            fields: [name]
+            message: "Group name already exists."

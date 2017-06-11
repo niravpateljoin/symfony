@@ -1,0 +1,101 @@
+{% extends "LostUserBundle::layout.html.twig" %}
+
+{% block body %}
+    <div class="loginBg">
+        <div class="login">
+            <div class="loginForm">
+                {% block fos_user_content %}
+                    {% trans_default_domain 'FOSUserBundle' %}
+{#                    <h1>Forgot Password</h1>#}
+                    <h1>Having trouble signing in?</h1>
+                    <form action="{{ path('fos_user_resetting_send_email') }}" method="POST" class="fos_user_resetting_request" id="forgot_password">
+                        {#{% for flashMessage in app.session.flashbag.get('failure') %}
+                            <div class="flash-message">{{ flashMessage  }}</div>
+                        {% endfor %}#}
+                        {% include "LostUserBundle::flashMessage.html.twig" %}
+                        <ul>
+                            {% if invalid_username is defined %}
+                                <div class="alert alert-danger">
+                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                    <p>{{ 'resetting.request.invalid_username'|trans({'%username%': invalid_username}) }}</p>
+                                </div>
+                            {% endif %}
+                            {% if invalid_email is defined %}
+                                <div class="alert alert-danger">
+                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                    <p>{{ 'resetting.request.invalid_email'|trans({'%username%': invalid_email}) }}</p>
+                                </div>
+                            {% endif %}
+                                <label id="resettype-error" class="error" for="resettype"></label>
+                                <li><label class="radioL"><input type="radio" id="password" name="resettype" required="required" value="password" /> I don't know my password</label> </li>
+                                <li><label class="radioL"><input type="radio" id="username" name="resettype" required="required" value="username" /> I don't know my username </label>
+                            </li>
+                            <li><input type="text" id="email" name="username" required="required" placeholder="username or email address" /></li>
+                        
+                            <li class="submit"><input type="submit" value="{{ 'resetting.request.submit'|trans }}" class="submitBtn"/></li>
+                        </ul>
+                    </form>
+                {% endblock fos_user_content %}
+            </div>
+        </div>
+    </div>
+{% endblock body %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+                        
+            $('#forgot_password').validate({
+                rules: {
+                    "username": {
+                        "required": true
+                    },
+                    "resettype": {
+                        "required": true
+                    }
+                },
+                messages: {
+                    "username": {
+                        "required": "Please enter username/email.",
+                    },
+                    "resettype": {
+                        "required": "Please select one of the following options.",
+                    }
+                }
+            });
+            
+            // update placeholder according to reset type (username, password) 
+            $('input[name="resettype"]:radio').on('click', function(){
+               switch($(this).val()) {
+                   case 'password':
+                        $('input[name="username"]').attr('placeholder', 'username or email address');
+                        $('input[name="username"]').rules('add', {
+                            required: true,
+                            messages: {
+                                required: "Please enter username/email."
+                            }
+                        });
+                       break;
+                   case 'username':
+                       $('input[name="username"]').attr('placeholder', 'email address');
+                       $('input[name="username"]').rules('add', {
+                            required: true,
+                            messages: {
+                                required: "Please enter email."
+                            }
+                        });
+                       break;
+               }
+            });
+            
+            if($('input[name="resettype"]:checked').val()) {
+                $('input[name="resettype"][value="'+$('input[name="resettype"]:checked').val()+'"]').click();
+            }
+            
+        });
+        
+    </script>
+
+{% endblock javascripts %}
