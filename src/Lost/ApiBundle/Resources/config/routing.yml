@@ -1,0 +1,200 @@
+api_version:
+    path: /version
+    defaults: { _controller: DispensariesApiBundle:AppVersion:version}
+    methods: ['GET']
+    
+api_login:
+    path: /login
+    defaults: { _controller: DispensariesApiBundle:Login:login}
+    methods: ['POST']
+
+api_social_login:
+    path: /social-login
+    defaults: { _controller: DispensariesApiBundle:Login:socialLogin}
+    methods: ['POST']
+    
+api_login_check:
+    path: /login_check
+    defaults: { _controller: FOSUserBundle:Security:check }
+    methods: ['POST']
+
+api_registrations:
+    path: /registration
+    defaults: { _controller: DispensariesApiBundle:Registration:index}
+    methods: ['POST']
+    
+api_forgot_password:
+    path: /forgot-password
+    defaults: { _controller: DispensariesApiBundle:ForgotPassword:sendMail}
+    methods: ['POST']
+
+api_location_list:
+    path: /location-list
+    defaults: { _controller: DispensariesApiBundle:Location:list}
+    #condition: 'request.attributes.get("version") == 1'
+    methods: ['POST']
+
+api_business_filter:
+    path: /business-filter
+    defaults: { _controller: DispensariesApiBundle:BusinessFilter:filterList}
+    methods: ['GET']
+
+api_business_search:
+    path: /business-search
+    defaults: { _controller: DispensariesApiBundle:BusinessSearch:searchList}
+    methods: ['POST']
+
+api_business_list:
+    path: /business-detail
+    defaults: { _controller: DispensariesApiBundle:BusinessDetail:detail}
+    methods: ['POST']
+
+api_business_detail_basic:
+    path: /business-detail/basic
+    defaults: { _controller: DispensariesApiBundle:NewBusinessDetail:basicDetail}
+    methods: ['POST']
+    
+api_business_detail_overview:
+    path: /business-detail/overview
+    defaults: { _controller: DispensariesApiBundle:NewBusinessDetail:overView}
+    methods: ['POST']
+
+api_business_detail_contact:
+    path: /business-detail/contact
+    defaults: { _controller: DispensariesApiBundle:NewBusinessDetail:contact}
+    methods: ['POST']
+    
+api_business_detail_news:
+    path: /business-detail/news
+    defaults: { _controller: DispensariesApiBundle:NewBusinessDetail:news}
+    methods: ['POST']
+
+api_business_detail_menu:
+    path: /business-detail/menus
+    defaults: { _controller: DispensariesApiBundle:NewBusinessDetail:menu}
+    methods: ['POST']
+
+api_business_detail_photo:
+    path: /business-detail/photos
+    defaults: { _controller: DispensariesApiBundle:NewBusinessDetail:photo}
+    methods: ['POST']
+
+api_business_detail_review:
+    path: /business-detail/reviews
+    defaults: { _controller: DispensariesApiBundle:NewBusinessDetail:review}
+    methods: ['POST']
+
+api_business_detail_social:
+    path: /business-detail/social
+    defaults: { _controller: DispensariesApiBundle:NewBusinessDetail:social}
+    methods: ['POST']
+
+api_business_detail_social_media:
+    path: /business-detail/social-media
+    defaults: { _controller: DispensariesApiBundle:NewBusinessDetail:socialMedia}
+    methods: ['POST']
+
+api_business_detail_request_for_appointment:
+    path: /business-detail/request-for-appointment
+    defaults: { _controller: DispensariesApiBundle:BusinessAppointment:requestAppointment}
+    methods: ['POST']
+
+api_business_detail_write_review:
+    path: /business-detail/add-review
+    defaults: { _controller: DispensariesApiBundle:BusinessAddReview:addReview}
+    methods: ['POST']
+    
+api_business_mark_favourite:
+    path: /business-mark-favourite
+    defaults: { _controller: DispensariesApiBundle:BusinessFavourite:favourite}
+    methods: ['POST']
+
+api_business_favourite_list:
+    path: /my-favourite-business-list
+    defaults: { _controller: DispensariesApiBundle:BusinessFavouriteList:favouriteList}
+    methods: ['POST']
+
+api_business_promotions_list:
+    path: /promotions
+    defaults: { _controller: DispensariesApiBundle:BusinessPromotionList:promotionList}
+    methods: ['POST']
+
+api_user_earn_list:
+    path: /user-earn-points
+    defaults: { _controller: DispensariesApiBundle:UserEarnPoints:earnPoints}
+    methods: ['POST']
+
+api_user_burn_list:
+    path: /user-burn-points
+    defaults: { _controller: DispensariesApiBundle:UserBurnPoints:burnPoints}
+    methods: ['POST']
+    
+api_user_burn_point_request:
+    path: /burn-point-request
+    defaults: { _controller: DispensariesApiBundle:UserBurnPointsRequest:burnPointsRequest}
+    methods: ['POST']
+    
+api_user_upload_receipt:
+    path: /user-upload-receipt
+    defaults: { _controller: DispensariesApiBundle:UserUploadReceipt:uploadReceipt}
+    methods: ['POST']
+
+api_user_receipt_list:
+    path: /user-receipt-list
+    defaults: { _controller: DispensariesApiBundle:UserReceiptList:receipts}
+    methods: ['POST']
+
+api_user_checkin:
+    path: /user-checkin
+    defaults: { _controller: DispensariesApiBundle:UserCheckin:checkin}
+    methods: ['POST']
+
+api_user_checkin_list:
+    path: /my-checkin-list
+    defaults: { _controller: DispensariesApiBundle:UserCheckinList:checkinList}
+    methods: ['POST']
+
+api_user_referal_list:
+    path: /my-referal-list
+    defaults: { _controller: DispensariesApiBundle:UserReferalList:referalList}
+    methods: ['POST']
+    
+api_business_referal:
+    path: /refer-friend
+    defaults: { _controller: DispensariesApiBundle:UserReferFriend:referFriend}
+    methods: ['POST']
+
+api_business_get_points:
+    path: /user-points
+    defaults: { _controller: DispensariesApiBundle:UserPoints:point}
+    methods: ['POST']
+
+api_get_user_profile:
+    path: /get-user-profile
+    defaults: { _controller: DispensariesApiBundle:UserProfile:profile}
+    methods: ['POST']
+
+api_update_user_profile:
+    path: /update-user-profile
+    defaults: { _controller: DispensariesApiBundle:UpdateUserProfile:UpdateProfile}
+    methods: ['POST']
+
+api_android_push_notification:
+    path: /push-android
+    defaults: { _controller: DispensariesApiBundle:PushDemo:pushAndroid}
+    methods: ['POST']
+
+api_user_push_notification_list:
+    path: /push-notification-list
+    defaults: { _controller: DispensariesApiBundle:UserNotificationList:notificationList}
+    methods: ['POST']
+
+api_static_page_content:
+    path: /static-pages
+    defaults: { _controller: DispensariesApiBundle:StaticPages:getPageContent}
+    methods: ['POST']
+
+api_available_points_to_redeem:
+    path: /available_points_to_redeem
+    defaults: { _controller: DispensariesApiBundle:UserEarnPoints:getAvailablePointsToRedeem}
+    methods: ['POST']
